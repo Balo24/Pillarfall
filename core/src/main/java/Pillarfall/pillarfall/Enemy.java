@@ -1,10 +1,12 @@
 package Pillarfall.pillarfall;
 
+import com.badlogic.gdx.Gdx;
+
 public class Enemy {
 
     //Attribute / Felder
-    private int x;
-    private int y;
+     private float x;
+     private float y; 
 
     private int speed;
 
@@ -23,7 +25,8 @@ public class Enemy {
         //Bewegung des Gegners
         public void move()
         {
-            this.x += speed;
+            //this.x += speed;
+            x += speed * Gdx.graphics.getDeltaTime();
         }
 
         //Update Methode, die die Bewegung und andere Logiken des Gegners aktualisiert

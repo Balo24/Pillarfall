@@ -10,12 +10,17 @@ public class Tile {
     private int[][] map;
     private int width;
     private int height;
+
+    // Tile-Typen
+    public static final int AIR = 0;
+    public static final int GROUND = 1;
+    public static final int SPIKE = 2;
      
     //Konstruktor - initialisiert die Tile-Map
      
     public Tile() {
-        this.width = 200;
-        this.height = 50;
+        this.width = MAX_WIDTH;
+        this.height = MAX_HEIGHT;
         this.map = new int[height][width];
         initializeSimpleMap();
     }
