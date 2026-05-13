@@ -5,9 +5,9 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Enemy {
 
-    //Attribute / Felder
 
-    //Unterscheidung bei der Bewegung
+
+    //Unterscheidung bei der Bewegung für Animationen
     private enum movestate{
         IDLE, RUNNING, JUMPING
     }
@@ -17,10 +17,10 @@ public class Enemy {
     }
 
     movestate Movestate = movestate.IDLE;
-
+    //Attribute / Felder
     private Vector2 velocity;
     private Vector2 position;
-    private Vector2 acceleration;
+
 
     //Für die Health-Bar
     private final int MAX_HEALTH;
@@ -37,7 +37,7 @@ public class Enemy {
         JUMP_POWER = jumpPower;
         this.position = new Vector2(x,y);
         velocity = new Vector2(0,0);
-        acceleration = new Vector2(0,0);
+
         MAX_HEALTH = maxHealth;
 
     }
@@ -45,24 +45,14 @@ public class Enemy {
     public void update()
     {
         move();
+        AI();
     }
 
 
-     //Bewegung des Gegners
+     //Bewegung des Gegners --> Ändere es so dass es wie beim Spieler ist
      public void move()
      {
-         float delta = Gdx.graphics.getDeltaTime();
-         if(Movestate == movestate.RUNNING)
-         {
-             velocity.add(acceleration.cpy().scl(delta));
-             position.add(velocity.cpy().scl(delta));
-         }
 
-         if(Movestate == movestate.JUMPING || !is_jumping)
-         {
-             velocity.add(acceleration.cpy().scl(delta));
-             position.add(velocity.cpy().scl(delta));
-         }
 
      }
      //Logik zur Auswahl der Aktion --> Springen, Bewegen oder Wenn Spieler in der Nähe Angreifen

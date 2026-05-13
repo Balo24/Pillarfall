@@ -1,46 +1,35 @@
 package Pillarfall.pillarfall;
 
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.renderers.OrthoCachedTiledMapRenderer;
+
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class World {
-    public static final int TILE_SIZE = 16;
-    public static final int MAX_WIDTH = 200;
-    public static final int MAX_HEIGHT = 100;
+    private final Player player;
+    //Temporär vielleicht gibt es ein besseres System mit der TiledMap
+    private List<Enemy> enemies = new ArrayList<>();
 
-    Player player;
-    Enemy enemy;
+    Assets assets = new Assets();
+    //Die Map mit dem Format TiledMap --> Level Editor kann genutzt werden
+    TiledMap map;
+    TiledMapRenderer mapRenderer;
 
-    Tile AIR = new Tile(0,false,false);
-    Tile STONE = new Tile(1,true,false);
-    Tile SPIKE = new Tile(2,true,true);
-
-    private Tile[][] map;
-
-    public void update()
-    {
-        initializeSimpleMap();
+    public World(Player player, TiledMap map) {
+        this.player = player;
+        this.map = map;
+        //Zum Rendern der Map
+        mapRenderer = new OrthoCachedTiledMapRenderer(map, 1f/16f);
     }
 
-    private void initializeSimpleMap() {
-        // Boden am unteren Ende
-        for (int y = 0; y < MAX_HEIGHT; y++)
-        {
-            for (int x = 0; x < MAX_WIDTH; x++) {
-                map[y][x] = AIR;
-            }
-        }
-        for (int i = 0; i < MAX_WIDTH; i++)
-        {
-            map[MAX_HEIGHT - 1][i] = STONE;
-        }
+    //Hier kommt die Collision Logik mithilfe der map
 
 
 
+    public Player getPlayer() {
+        return player;
     }
-    public Tile getTile(int x, int y) {
-        if (x >= 0 && x < MAX_WIDTH && y >= 0 && y < MAX_HEIGHT) {
-            return map[y][x];
-        }
-        return null;
-    }
-
-
 }
