@@ -11,7 +11,7 @@ public class Player {
 
     //Für Animationen
     private enum movestate{
-        RUNNING, IDLE, JUMPING
+        RUNNING, IDLE, JUMPING, DASHING
     }
 
     private movestate Movestate = movestate.IDLE;
@@ -21,10 +21,15 @@ public class Player {
     private int health;
 
     private final int SPEED;
+
     private final int JUMP_POWER;
     private boolean is_jumping = false;
+
     private float direction = 1;
 
+    private int DASH_POWER;
+    private float dash_cd;
+    private boolean is_dashing = false;
 
     //Vektoren führen zu einer besseren Bewegung --> nicht steif
     private Vector2 velocity;
@@ -35,8 +40,9 @@ public class Player {
     private final Sprite player_sprite;
     private final Rectangle player_rect;
 
-    public Player(int maxHealth, int speed, int jump_power, Texture player_tex) {
+    public Player(int maxHealth, int speed, int jump_power, int dashPower, Texture player_tex) {
         this.MAX_HEALTH = maxHealth;
+        DASH_POWER = dashPower;
 
 
         velocity = new Vector2(0,0);
@@ -47,7 +53,7 @@ public class Player {
         this.player_sprite = new Sprite(player_tex);
 
         player_sprite.setPosition(position.x,position.y);
-        //Größe in World Units --> 1 : 16px
+        //Größe in World Units --> 1 : 32px
         player_sprite.setSize(1,1);
 
         this.player_rect = new Rectangle(player_sprite.getX(), player_sprite.getY(),player_sprite.getWidth(), player_sprite.getHeight());
@@ -55,11 +61,12 @@ public class Player {
 
     public void update()
     {
+        float delta = Gdx.graphics.getDeltaTime();
 
         //Simple Ground Collision damit Springen und Gravitation funktioniert --> Austauschen mit dem richtigen System
-        if(position.y <= 0)
+        if(position.y <= 3)
         {
-            position.y = 0;
+            position.y = 3;
             velocity.y = 0;
             is_jumping = false;
         }
@@ -70,6 +77,19 @@ public class Player {
         player_rect.set(player_sprite.getX(), player_sprite.getY(),player_sprite.getWidth(), player_sprite.getHeight());
 
         //System.out.println("POS: " + position + " VEL: " + velocity); --> Zum debuggen
+        if(is_dashing)
+        {
+            dash_cd += delta;
+
+        }
+
+
+        if(dash_cd >= 2f)
+        {
+            is_dashing = false;
+            dash_cd = 0;
+        }
+        //System.out.println(dash_cd);
 
     }
     //Falls der Spieler sich nicht bewegt und man das Movement-System geändert hat
@@ -102,10 +122,13 @@ public class Player {
         //Gravitation
         velocity.y -= 40f * delta;
 
+
+
+
         float targetSpeed = direction * SPEED;
 
         //Geschwindigkeit
-        float acceleration = is_jumping ? 4f : 12f; //Wenn is_jumping true dann 12f sonst 4f
+        float acceleration = is_jumping || is_dashing ? 4f : 12f; //Wenn is_jumping true dann 12f sonst 4f
         float differenz = targetSpeed - velocity.x;
         velocity.x += acceleration * differenz * delta;
 
@@ -136,8 +159,14 @@ public class Player {
             }
 
         }
+        if(Gdx.input.isKeyPressed(Input.Keys.E) && !is_dashing)
+        {
+            velocity.x = DASH_POWER * direction;
+            Movestate = movestate.DASHING;
+            is_dashing = true;
+        }
         //Keine Bewegung
-        if (direction == 0 && !is_jumping) {
+        if (direction == 0 && !is_jumping && !is_dashing ) {
             Movestate = movestate.IDLE;
         }
 

@@ -19,7 +19,7 @@ public class Pillarfall_Game extends Game {
     public void create() {
 
         batch = new SpriteBatch();
-        //Units der Welt die angezeigt wird --> 1 Unit ist 16px
+        //Units der Welt die angezeigt wird --> 1 Unit ist 32px
         viewport = new ExtendViewport(10, 5);
 
         //Direkt im Loading Screen ist nur temporär normalerweise ein Menu
@@ -28,10 +28,10 @@ public class Pillarfall_Game extends Game {
 
     public void startGame() {
         world = new World(new Player(
-            100, 12, 18,
-            assets.manager.get("player/Temp_player.png")
+            100, 12, 18, 40,
+            assets.manager.get(Assets.playerTexture)
 
-        ), assets.manager.get(Assets.map));
+        ), this ,assets.manager.get(Assets.map));
         // Wechseln des Screens
         setScreen(new GameScreen(this, assets));
 

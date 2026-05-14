@@ -3,6 +3,10 @@ package Pillarfall.pillarfall;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapObjects;
+
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 
@@ -13,6 +17,7 @@ public class GameScreen implements Screen {
     private final Assets assets;
     private final OrthographicCamera camera;
     private final Player player;
+    private final World world;
 
     GameScreen(Pillarfall_Game game, Assets assets)
     {
@@ -22,8 +27,8 @@ public class GameScreen implements Screen {
 
         camera = (OrthographicCamera) game.getViewport().getCamera();
         player = game.getWorld().getPlayer();
-
-        player.setPosition(0,10);
+        world = game.getWorld();
+        player.setPosition(3,3);
 
     }
 
@@ -44,8 +49,8 @@ public class GameScreen implements Screen {
         float lerpx = 8f;
         float lerpy = 5f;
         Vector3 position = this.camera.position;
-        position.x += (player.getPositionX() - position.x + 2) * lerpx * delta;
-        position.y += (player.getPositionY() - position.y + 2) * lerpy * delta;
+        position.x += (player.getPositionX() - position.x + 0.5f) * lerpx * delta;
+        position.y += (player.getPositionY() - position.y + 0.5f) * lerpy * delta;
         camera.position.set(position);
         camera.update();
 
@@ -54,14 +59,21 @@ public class GameScreen implements Screen {
 
         ScreenUtils.clear(Color.WHITE);
         //Die Map
-        game.getWorld().mapRenderer.setView(camera);
-        game.getWorld().mapRenderer.render();
+        world.mapRenderer.setView(camera);
+
+        world.mapRenderer.render();
+
+
 
         game.getBatch().setProjectionMatrix(camera.combined);
         //Alle geladene Sprites
         game.getBatch().begin();
+
+
         player.getPlayer_sprite().draw(game.getBatch());
         game.getBatch().end();
+
+
     }
 
     @Override
