@@ -17,13 +17,29 @@ public class Assets {
     //Die Assets die geladen werden sollen mit dem Pfad
     public static final AssetDescriptor<Texture> playerTexture =
         new AssetDescriptor<Texture>("player/Peter.png", Texture.class);
+
     public static final AssetDescriptor<TiledMap> map =
         new AssetDescriptor<TiledMap>("world/output/Simple_Map.tmx", TiledMap.class );
+
+    public static final AssetDescriptor<Texture> bgLayer0 =
+        new AssetDescriptor<Texture>("world/tiles/background/BACKGROUND.png", Texture.class );
+
+    public static final AssetDescriptor<Texture> bgLayer1 =
+        new AssetDescriptor<Texture>("world/tiles/background/WOODS - Fourth.png", Texture.class );
+
+    public static final AssetDescriptor<Texture> bgLayer2 =
+        new AssetDescriptor<Texture>("world/tiles/background/WOODS - Third.png", Texture.class );
+
+    public static final AssetDescriptor<Texture> bgLayer3 =
+        new AssetDescriptor<Texture>("world/tiles/background/WOODS - Second.png", Texture.class );
+
+    public static final AssetDescriptor<Texture> bgLayer4 =
+        new AssetDescriptor<Texture>("world/tiles/background/WOODS - First.png", Texture.class );
 
 
     Assets()
     {
-        manager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
+        manager.setLoader(TiledMap.class, new AtlasTmxMapLoader(new InternalFileHandleResolver()));
     }
 
     public void load()
@@ -31,6 +47,12 @@ public class Assets {
         //Hier geladen
         manager.load(playerTexture);
         manager.load(map);
+        manager.load(bgLayer0);
+        manager.load(bgLayer1);
+        manager.load(bgLayer2);
+        manager.load(bgLayer3);
+        manager.load(bgLayer4);
+
 
     }
 

@@ -3,9 +3,7 @@ package Pillarfall.pillarfall;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.maps.MapLayer;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.MapObjects;
+
 
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -18,6 +16,10 @@ public class GameScreen implements Screen {
     private final OrthographicCamera camera;
     private final Player player;
     private final World world;
+    private final Background background;
+
+
+
 
     GameScreen(Pillarfall_Game game, Assets assets)
     {
@@ -26,9 +28,39 @@ public class GameScreen implements Screen {
 
 
         camera = (OrthographicCamera) game.getViewport().getCamera();
+
         player = game.getWorld().getPlayer();
         world = game.getWorld();
         player.setPosition(3,3);
+        background = new Background();
+
+        background.addLayer(new BackgroundLayer(
+            assets.manager.get(Assets.bgLayer0),
+            1f
+
+        ));
+
+        background.addLayer(new BackgroundLayer(
+            assets.manager.get(Assets.bgLayer1),
+            0.1f
+
+        ));
+        background.addLayer(new BackgroundLayer(
+            assets.manager.get(Assets.bgLayer2),
+            0.3f
+
+        ));
+        background.addLayer(new BackgroundLayer(
+            assets.manager.get(Assets.bgLayer3),
+            0.6f
+
+        ));
+        background.addLayer(new BackgroundLayer(
+            assets.manager.get(Assets.bgLayer4),
+            0.8f
+
+        ));
+
 
     }
 
@@ -44,34 +76,28 @@ public class GameScreen implements Screen {
 
         player.update();
 
+        ScreenUtils.clear(Color.WHITE);
 
-        //Kamera
         float lerpx = 8f;
         float lerpy = 5f;
-        Vector3 position = this.camera.position;
-        position.x += (player.getPositionX() - position.x + 0.5f) * lerpx * delta;
-        position.y += (player.getPositionY() - position.y + 0.5f) * lerpy * delta;
-        camera.position.set(position);
+
+        camera.position.x += (player.getPositionX() - camera.position.x + 0.5f) * lerpx * delta;
+        camera.position.y += (player.getPositionY() - camera.position.y + 2f) * lerpy * delta;
         camera.update();
 
-        //Rendering
         game.getViewport().apply();
-
-        ScreenUtils.clear(Color.WHITE);
-        //Die Map
-        world.mapRenderer.setView(camera);
-
-        world.mapRenderer.render();
-
 
 
         game.getBatch().setProjectionMatrix(camera.combined);
-        //Alle geladene Sprites
         game.getBatch().begin();
 
-
+        background.render(game.getBatch(), camera);
         player.getPlayer_sprite().draw(game.getBatch());
+
         game.getBatch().end();
+
+        world.mapRenderer.setView(camera);
+        world.mapRenderer.render();
 
 
     }

@@ -82,7 +82,7 @@ public class Player {
             dash_cd += delta;
 
         }
-
+//        debug_Movement();
 
         if(dash_cd >= 2f)
         {
@@ -98,14 +98,20 @@ public class Player {
         float delta = Gdx.graphics.getDeltaTime();
 
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            position.x += 200 * delta;
+            position.x += 25 * delta;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            position.x -= 200 * delta;
+            position.x -= 25 * delta;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+            position.y += 25 * delta;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+            position.y -= 25 * delta;
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-            position.y += 200 * delta;
+            position.y += 25 * delta;
         }
 
         player_sprite.setPosition(position.x, position.y);
