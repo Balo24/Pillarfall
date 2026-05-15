@@ -26,6 +26,8 @@ public class Player {
     private boolean is_jumping = false;
 
     private float direction = 1;
+    private float dash_dir;
+
 
     private int DASH_POWER;
     private float dash_cd;
@@ -82,6 +84,8 @@ public class Player {
             dash_cd += delta;
 
         }
+        System.out.println(dash_cd);
+
 //        debug_Movement();
 
         if(dash_cd >= 2f)
@@ -89,7 +93,6 @@ public class Player {
             is_dashing = false;
             dash_cd = 0;
         }
-        //System.out.println(dash_cd);
 
     }
     //Falls der Spieler sich nicht bewegt und man das Movement-System geändert hat
@@ -134,7 +137,7 @@ public class Player {
         float targetSpeed = direction * SPEED;
 
         //Geschwindigkeit
-        float acceleration = is_jumping || is_dashing ? 4f : 12f; //Wenn is_jumping true dann 12f sonst 4f
+        float acceleration = is_jumping || is_dashing ? 4f : 12f; //Wenn is_jumping true dann 4f sonst 12f
         float differenz = targetSpeed - velocity.x;
         velocity.x += acceleration * differenz * delta;
 
@@ -150,7 +153,8 @@ public class Player {
 
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             direction = 1f;
-            if(!is_jumping)
+            dash_dir = 1f;
+            if(!is_jumping|| !is_dashing)
             {
                 Movestate = movestate.RUNNING;
             }
@@ -159,7 +163,8 @@ public class Player {
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             direction = -1f;
-            if(!is_jumping)
+            dash_dir = -1f;
+            if(!is_jumping || !is_dashing)
             {
                 Movestate = movestate.RUNNING;
             }
@@ -167,7 +172,7 @@ public class Player {
         }
         if(Gdx.input.isKeyPressed(Input.Keys.E) && !is_dashing)
         {
-            velocity.x = DASH_POWER * direction;
+            velocity.x = DASH_POWER * dash_dir;
             Movestate = movestate.DASHING;
             is_dashing = true;
         }
