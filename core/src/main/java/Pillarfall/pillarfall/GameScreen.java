@@ -133,4 +133,10 @@ public class GameScreen implements Screen {
         //Alles gelöscht am Ende
         assets.dispose();
     }
+
+    //Healthbar 21.05.2026 Vincent
+    public void Healthbar()
+    {
+        player.renderHealthBar(game.getBatch());
+    }
 }
