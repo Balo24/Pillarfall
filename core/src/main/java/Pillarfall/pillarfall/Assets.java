@@ -18,6 +18,12 @@ public class Assets {
     public static final AssetDescriptor<Texture> playerTexture =
         new AssetDescriptor<Texture>("player/Peter.png", Texture.class);
 
+    public static final AssetDescriptor<Texture> fullHeart =
+        new AssetDescriptor<Texture>("player/full_heart.png", Texture.class);
+
+    public static final AssetDescriptor<Texture> emptyHeart =
+        new AssetDescriptor<Texture>("player/empty_heart.png", Texture.class);
+
     public static final AssetDescriptor<TiledMap> map =
         new AssetDescriptor<TiledMap>("world/output/Simple_Map.tmx", TiledMap.class );
 
@@ -46,6 +52,8 @@ public class Assets {
     {
         //Hier geladen
         manager.load(playerTexture);
+        manager.load(fullHeart);
+        manager.load(emptyHeart);
         manager.load(map);
         manager.load(bgLayer0);
         manager.load(bgLayer1);
