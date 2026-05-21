@@ -1,8 +1,11 @@
 package Pillarfall.pillarfall;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Matrix4;
 
 
 
@@ -18,8 +21,10 @@ public class GameScreen implements Screen {
     private final World world;
     private final Background background;
 
-
-
+    private static final int HEART_COUNT = 3;
+    private static final int HEART_SIZE = 32;
+    private static final int HEART_SPACING = 10;
+    private static final int HEART_MARGIN = 20;
 
     GameScreen(Pillarfall_Game game, Assets assets)
     {
@@ -99,6 +104,10 @@ public class GameScreen implements Screen {
         world.mapRenderer.setView(camera);
         world.mapRenderer.render();
 
+        game.getBatch().setProjectionMatrix(new Matrix4().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+        game.getBatch().begin();
+        renderHealthBar(game.getBatch());
+        game.getBatch().end();
 
     }
 
@@ -134,9 +143,21 @@ public class GameScreen implements Screen {
         assets.dispose();
     }
 
-    //Healthbar 21.05.2026 Vincent
-    public void Healthbar()
-    {
-        player.renderHealthBar(game.getBatch());
+    private void renderHealthBar(com.badlogic.gdx.graphics.g2d.SpriteBatch batch) {
+        int screenWidth = Gdx.graphics.getWidth();
+        int screenHeight = Gdx.graphics.getHeight();
+        int startX = screenWidth - HEART_MARGIN - HEART_COUNT * HEART_SIZE - (HEART_COUNT - 1) * HEART_SPACING;
+        int startY = screenHeight - HEART_MARGIN - HEART_SIZE;
+
+        int health = player.getHealth();
+        int maxHealth = player.getMaxHealth();
+        Texture fullHeart = assets.manager.get(Assets.fullHeart);
+        Texture emptyHeart = assets.manager.get(Assets.emptyHeart);
+
+        for (int i = 0; i < HEART_COUNT; i++) {
+            int threshold = (int) Math.ceil((i + 1) * maxHealth / (double) HEART_COUNT);
+            Texture currentHeart = health >= threshold ? fullHeart : emptyHeart;
+            batch.draw(currentHeart, startX + i * (HEART_SIZE + HEART_SPACING), startY, HEART_SIZE, HEART_SIZE);
+        }
     }
 }
