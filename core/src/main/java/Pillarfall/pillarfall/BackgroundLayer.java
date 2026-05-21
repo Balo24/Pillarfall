@@ -20,15 +20,14 @@ public class BackgroundLayer {
         this.worldHeight = texture.getHeight() / 32f;
     }
 
-    private float startX = 0;
-    private float startY = 0;
-
     public void render(SpriteBatch batch, OrthographicCamera camera) {
 
         float camX = camera.position.x - camera.viewportWidth / 2f;
         float camY = camera.position.y - camera.viewportHeight / 2f;
 
+        float startX = 0;
         float x = startX + camX * parallaxFactor;
+        float startY = 0;
         float y = startY + camY * parallaxFactor;
 
         batch.draw(texture, x, y, worldWidth, worldHeight);

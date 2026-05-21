@@ -32,7 +32,7 @@ public class Player {
     private float dash_dir;
 
 
-    private int DASH_POWER;
+    private final int DASH_POWER;
     private float dash_cd;
     private boolean is_dashing = false;
 
@@ -247,7 +247,7 @@ public class Player {
     public int getMaxHealth()
     {
         return MAX_HEALTH;}
-    
+
 
 
 
@@ -284,5 +284,5 @@ public class Player {
         emptyHeart.dispose();
     }
 
-    
+
 }
