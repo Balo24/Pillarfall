@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
@@ -19,6 +20,8 @@ public class Player {
     //Für die Health-Bar
     private final int MAX_HEALTH;
     private int health;
+    private Texture fullHeart;
+    private Texture emptyHeart;
 
     private final int SPEED;
 
@@ -44,7 +47,11 @@ public class Player {
 
     public Player(int maxHealth, int speed, int jump_power, int dashPower, Texture player_tex) {
         this.MAX_HEALTH = maxHealth;
+        this.health = maxHealth;
         DASH_POWER = dashPower;
+        fullHeart = new Texture("full_heart.png");
+        emptyHeart = new Texture("empty_heart.png");
+        this.position = new Vector2(0,0);
 
 
         velocity = new Vector2(0,0);
@@ -209,4 +216,73 @@ public class Player {
     public Vector2 getPosition() {
         return position;
     }
+
+
+
+    //HEALTH-BAR 21.05.2026 Vincent
+    public void damage(int amount)
+    {
+        health -= amount;
+        if(health < 0)
+        {
+            health = 0;
+        }
+    }
+    public void heal(int amount)
+    {
+        health += amount;
+        if(health > MAX_HEALTH)
+        {
+            health = MAX_HEALTH;
+        }
+    }
+    public boolean isDead()
+    {
+        return health <= 0;
+    }
+    public int getHealth()
+    {
+        return health;
+    }
+    public int getMaxHealth()
+    {
+        return MAX_HEALTH;}
+    
+
+
+
+        //Health-Bar rendern 21.05.2026 Vincent
+    public void renderHealthBar(SpriteBatch batch)
+    {
+        int startX = 20;
+        int startY = 680;
+        int size = 32;
+        int spacing = 10;
+
+        for (int i = 0; i < MAX_HEALTH; i++)
+        {
+            Texture currentHeart;
+
+            if ( i < health)
+            {
+                currentHeart = fullHeart;
+            }
+            else
+            {
+                currentHeart = emptyHeart;
+            }
+
+            batch.draw(currentHeart, startX + i * (size + spacing), startY, size, size);
+        }
+    }
+
+    //Cleanup 21.05.2026 Vincent
+
+    public void dispose()
+    {
+        fullHeart.dispose();
+        emptyHeart.dispose();
+    }
+
+    
 }
