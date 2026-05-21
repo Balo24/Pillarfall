@@ -20,8 +20,6 @@ public class Player {
     //Für die Health-Bar
     private final int MAX_HEALTH;
     private int health;
-    private Texture fullHeart;
-    private Texture emptyHeart;
 
     private final int SPEED;
 
@@ -49,8 +47,6 @@ public class Player {
         this.MAX_HEALTH = maxHealth;
         this.health = maxHealth;
         DASH_POWER = dashPower;
-        fullHeart = new Texture("full_heart.png");
-        emptyHeart = new Texture("empty_heart.png");
         this.position = new Vector2(0,0);
 
 
@@ -249,40 +245,6 @@ public class Player {
         return MAX_HEALTH;}
 
 
-
-
-        //Health-Bar rendern 21.05.2026 Vincent
-    public void renderHealthBar(SpriteBatch batch)
-    {
-        int startX = 20;
-        int startY = 680;
-        int size = 32;
-        int spacing = 10;
-
-        for (int i = 0; i < MAX_HEALTH; i++)
-        {
-            Texture currentHeart;
-
-            if ( i < health)
-            {
-                currentHeart = fullHeart;
-            }
-            else
-            {
-                currentHeart = emptyHeart;
-            }
-
-            batch.draw(currentHeart, startX + i * (size + spacing), startY, size, size);
-        }
-    }
-
-    //Cleanup 21.05.2026 Vincent
-
-    public void dispose()
-    {
-        fullHeart.dispose();
-        emptyHeart.dispose();
-    }
 
 
 }
