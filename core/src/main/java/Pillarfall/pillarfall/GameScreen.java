@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Matrix4;
 
 
@@ -20,6 +21,7 @@ public class GameScreen implements Screen {
     private final Player player;
     private final World world;
     private final Background background;
+    private final BitmapFont deathFont = new BitmapFont();
 
     private static final int HEART_COUNT = 3;
     private static final int HEART_SIZE = 32;
@@ -79,7 +81,7 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
 
-        player.update();
+        world.update(delta);
 
         ScreenUtils.clear(Color.WHITE);
 
@@ -99,6 +101,10 @@ public class GameScreen implements Screen {
         background.render(game.getBatch(), camera);
         player.getPlayer_sprite().draw(game.getBatch());
 
+        for (Enemy enemy : world.getEnemies()) {
+            enemy.getEnemy_sprite().draw(game.getBatch());
+        }
+
         game.getBatch().end();
 
         world.mapRenderer.setView(camera);
@@ -107,6 +113,12 @@ public class GameScreen implements Screen {
         game.getBatch().setProjectionMatrix(new Matrix4().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         game.getBatch().begin();
         renderHealthBar(game.getBatch());
+
+        if (player.shouldShowDeathMessage()) {
+            deathFont.setColor(Color.RED);
+            deathFont.draw(game.getBatch(), player.getDeathMessage(), 20, Gdx.graphics.getHeight() - 20);
+        }
+
         game.getBatch().end();
 
     }
