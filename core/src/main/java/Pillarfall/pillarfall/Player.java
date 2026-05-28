@@ -4,61 +4,61 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.List;
+
 public class Player {
 
-    //Für Animationen
     private enum movestate{
         RUNNING, IDLE, JUMPING, DASHING
     }
 
     private movestate Movestate = movestate.IDLE;
 
-    //Für die Health-Bar
     private final int MAX_HEALTH;
     private int health;
 
     private final int SPEED;
-
     private final int JUMP_POWER;
-    private boolean is_jumping = false;
+    private final int DASH_POWER;
+    private final int ATTACK_DAMAGE = 10;
+    private final float ATTACK_RANGE = 1.3f;
+    private final float ATTACK_COOLDOWN = 0.5f;
 
+    private boolean is_jumping = false;
     private float direction = 1;
     private float dash_dir;
-
-
-    private final int DASH_POWER;
     private float dash_cd;
+    private float attackTimer = 0f;
     private boolean is_dashing = false;
 
-    //Vektoren führen zu einer besseren Bewegung --> nicht steif
-    private Vector2 velocity;
-    private Vector2 position = new Vector2(0,0);
-
-
+    private final Vector2 velocity;
+    private final Vector2 position = new Vector2(0,0);
+    private final Vector2 spawnPosition = new Vector2(0,0);
 
     private final Sprite player_sprite;
     private final Rectangle player_rect;
+
+    private final String deathMessage = "Du wurdest getötet! Starte neu.";
+    private final float DEATH_MESSAGE_DURATION = 5.0f;
+    private float deathMessageTimer = 0f;
 
     public Player(int maxHealth, int speed, int jump_power, int dashPower, Texture player_tex) {
         this.MAX_HEALTH = maxHealth;
         this.health = maxHealth;
         DASH_POWER = dashPower;
-        this.position = new Vector2(0,0);
-
+        this.position.set(0,0);
+        this.spawnPosition.set(0,0);
 
         velocity = new Vector2(0,0);
-
 
         this.SPEED = speed;
         this.JUMP_POWER = jump_power;
         this.player_sprite = new Sprite(player_tex);
 
         player_sprite.setPosition(position.x,position.y);
-        //Größe in World Units --> 1 : 32px
         player_sprite.setSize(1,1);
 
         this.player_rect = new Rectangle(player_sprite.getX(), player_sprite.getY(),player_sprite.getWidth(), player_sprite.getHeight());
@@ -68,7 +68,15 @@ public class Player {
     {
         float delta = Gdx.graphics.getDeltaTime();
 
-        //Simple Ground Collision damit Springen und Gravitation funktioniert --> Austauschen mit dem richtigen System
+        attackTimer += delta;
+
+        if (deathMessageTimer > 0f) {
+            deathMessageTimer -= delta;
+            if (deathMessageTimer < 0f) {
+                deathMessageTimer = 0f;
+            }
+        }
+
         if(position.y <= 3)
         {
             position.y = 3;
@@ -81,75 +89,33 @@ public class Player {
         player_sprite.setPosition(position.x,position.y);
         player_rect.set(player_sprite.getX(), player_sprite.getY(),player_sprite.getWidth(), player_sprite.getHeight());
 
-        //System.out.println("POS: " + position + " VEL: " + velocity); --> Zum debuggen
         if(is_dashing)
         {
             dash_cd += delta;
 
         }
-        System.out.println(dash_cd);
-
-//        debug_Movement();
 
         if(dash_cd >= 2f)
         {
             is_dashing = false;
             dash_cd = 0;
         }
-
-    }
-    //Falls der Spieler sich nicht bewegt und man das Movement-System geändert hat
-    private void debug_Movement()
-    {
-        float delta = Gdx.graphics.getDeltaTime();
-
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            position.x += 25 * delta;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            position.x -= 25 * delta;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            position.y += 25 * delta;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            position.y -= 25 * delta;
-        }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-            position.y += 25 * delta;
-        }
-
-        player_sprite.setPosition(position.x, position.y);
-
-        System.out.println(position);
     }
 
-
-    //Bewegung des Spielers
     private void move()
     {
         float delta = Gdx.graphics.getDeltaTime();
 
-        //Gravitation
         velocity.y -= 40f * delta;
 
-
-
-
         float targetSpeed = direction * SPEED;
-
-        //Geschwindigkeit
-        float acceleration = is_jumping || is_dashing ? 4f : 12f; //Wenn is_jumping true dann 4f sonst 12f
+        float acceleration = is_jumping || is_dashing ? 4f : 12f;
         float differenz = targetSpeed - velocity.x;
         velocity.x += acceleration * differenz * delta;
 
-        //Bewegung
         position.add(velocity.x * delta, velocity.y * delta);
-
-
     }
-    //Inputs des Spielers
+
     private void Inputhandler() {
 
         direction = 0f;
@@ -179,7 +145,6 @@ public class Player {
             Movestate = movestate.DASHING;
             is_dashing = true;
         }
-        //Keine Bewegung
         if (direction == 0 && !is_jumping && !is_dashing ) {
             Movestate = movestate.IDLE;
         }
@@ -191,11 +156,47 @@ public class Player {
         }
     }
 
+    public void attackEnemies(List<Enemy> enemies) {
+        if (!Gdx.input.isKeyJustPressed(Input.Keys.F)) {
+            return;
+        }
+
+        if (attackTimer < ATTACK_COOLDOWN) {
+            return;
+        }
+
+        attackTimer = 0f;
+
+        Enemy closestEnemy = null;
+        float closestDistance = Float.MAX_VALUE;
+
+        for (Enemy enemy : enemies) {
+            if (enemy == null || enemy.isDead()) {
+                continue;
+            }
+
+            float distance = enemy.getPosition().dst(position);
+            if (distance <= ATTACK_RANGE && distance < closestDistance) {
+                closestEnemy = enemy;
+                closestDistance = distance;
+            }
+        }
+
+        if (closestEnemy != null) {
+            closestEnemy.damage(ATTACK_DAMAGE);
+        }
+    }
+
+    public Rectangle getBounds() {
+        return player_rect;
+    }
+
     public Sprite getPlayer_sprite() {
         return player_sprite;
     }
-    //Startposition kann durch checkpoints ausgetauscht werden
+
     public void setPosition(float x, float y) {
+        this.spawnPosition.set(x, y);
         this.position.set(x, y);
         this.velocity.set(0, 0);
 
@@ -213,17 +214,37 @@ public class Player {
         return position;
     }
 
-
-
-    //HEALTH-BAR 21.05.2026 Vincent
     public void damage(int amount)
     {
         health -= amount;
         if(health < 0)
         {
             health = 0;
+            onDeath();
         }
     }
+
+    private void onDeath() {
+        deathMessageTimer = DEATH_MESSAGE_DURATION;
+        respawn();
+    }
+
+    public void respawn() {
+        position.set(spawnPosition);
+        velocity.set(0, 0);
+        health = MAX_HEALTH;
+        is_jumping = false;
+        is_dashing = false;
+        dash_cd = 0f;
+        attackTimer = 0f;
+        direction = 1f;
+        dash_dir = 1f;
+        Movestate = movestate.IDLE;
+
+        player_sprite.setPosition(position.x, position.y);
+        player_rect.set(player_sprite.getX(), player_sprite.getY(), player_sprite.getWidth(), player_sprite.getHeight());
+    }
+
     public void heal(int amount)
     {
         health += amount;
@@ -232,19 +253,29 @@ public class Player {
             health = MAX_HEALTH;
         }
     }
+
     public boolean isDead()
     {
         return health <= 0;
     }
+
     public int getHealth()
     {
         return health;
     }
+
     public int getMaxHealth()
     {
-        return MAX_HEALTH;}
+        return MAX_HEALTH;
+    }
 
+    public boolean shouldShowDeathMessage() {
+        return deathMessageTimer > 0f;
+    }
 
-
-
+    public String getDeathMessage() {
+        return deathMessage;
+    }
 }
+
+
