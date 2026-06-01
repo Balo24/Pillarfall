@@ -12,7 +12,6 @@ import com.badlogic.gdx.math.Matrix4;
 
 import com.badlogic.gdx.utils.ScreenUtils;
 
-/** First screen of the application. Displayed after the application is created. */
 public class GameScreen implements Screen {
 
     private final Pillarfall_Game game;
@@ -24,9 +23,9 @@ public class GameScreen implements Screen {
     private final BitmapFont deathFont = new BitmapFont();
 
     private static final int HEART_COUNT = 3;
-    private static final int HEART_SIZE = 32;
-    private static final int HEART_SPACING = 10;
-    private static final int HEART_MARGIN = 20;
+    private static final int HEART_SIZE = 64;
+    private static final int HEART_SPACING = 5;
+    private static final int HEART_MARGIN = 5;
 
     GameScreen(Pillarfall_Game game, Assets assets)
     {
@@ -38,7 +37,7 @@ public class GameScreen implements Screen {
 
         player = game.getWorld().getPlayer();
         world = game.getWorld();
-        player.setPosition(3,3);
+        player.setSpawnPosition(5,5);
         background = new Background();
 
         background.addLayer(new BackgroundLayer(
@@ -158,7 +157,7 @@ public class GameScreen implements Screen {
     private void renderHealthBar(com.badlogic.gdx.graphics.g2d.SpriteBatch batch) {
         int screenWidth = Gdx.graphics.getWidth();
         int screenHeight = Gdx.graphics.getHeight();
-        int startX = screenWidth - HEART_MARGIN - HEART_COUNT * HEART_SIZE - (HEART_COUNT - 1) * HEART_SPACING;
+        int startX = screenWidth - HEART_COUNT * HEART_SIZE - (HEART_COUNT - 1) * HEART_SPACING;
         int startY = screenHeight - HEART_MARGIN - HEART_SIZE;
 
         int health = player.getHealth();
@@ -169,7 +168,7 @@ public class GameScreen implements Screen {
         for (int i = 0; i < HEART_COUNT; i++) {
             int threshold = (int) Math.ceil((i + 1) * maxHealth / (double) HEART_COUNT);
             Texture currentHeart = health >= threshold ? fullHeart : emptyHeart;
-            batch.draw(currentHeart, startX + i * (HEART_SIZE + HEART_SPACING), startY, HEART_SIZE, HEART_SIZE);
+            batch.draw(currentHeart, startX + i * (HEART_SPACING + HEART_SIZE), startY, HEART_SIZE, HEART_SIZE);
         }
     }
 }

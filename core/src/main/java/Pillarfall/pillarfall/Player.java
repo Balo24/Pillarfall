@@ -23,18 +23,20 @@ public class Player {
     private final int SPEED;
     private final int JUMP_POWER;
     private final int DASH_POWER;
+
     private final int ATTACK_DAMAGE = 10;
     private final float ATTACK_RANGE = 1.3f;
     private final float ATTACK_COOLDOWN = 0.5f;
 
     private boolean is_jumping = false;
+    private boolean is_Grounded = false;
     private float direction = 1;
     private float dash_dir;
     private float dash_cd;
     private float attackTimer = 0f;
     private boolean is_dashing = false;
 
-    private final Vector2 velocity;
+    private Vector2 velocity;
     private final Vector2 position = new Vector2(0,0);
     private final Vector2 spawnPosition = new Vector2(0,0);
 
@@ -59,13 +61,14 @@ public class Player {
         this.player_sprite = new Sprite(player_tex);
 
         player_sprite.setPosition(position.x,position.y);
-        player_sprite.setSize(1,1);
+        player_sprite.setSize(0.5f,1f);
 
-        this.player_rect = new Rectangle(player_sprite.getX(), player_sprite.getY(),player_sprite.getWidth(), player_sprite.getHeight());
+        this.player_rect = new Rectangle(position.x,position.y,0.5f,1f);
     }
 
     public void update()
     {
+
         float delta = Gdx.graphics.getDeltaTime();
 
         attackTimer += delta;
@@ -77,17 +80,10 @@ public class Player {
             }
         }
 
-        if(position.y <= 3)
-        {
-            position.y = 3;
-            velocity.y = 0;
-            is_jumping = false;
-        }
         Inputhandler();
-        move();
 
-        player_sprite.setPosition(position.x,position.y);
-        player_rect.set(player_sprite.getX(), player_sprite.getY(),player_sprite.getWidth(), player_sprite.getHeight());
+
+
 
         if(is_dashing)
         {
@@ -100,20 +96,29 @@ public class Player {
             is_dashing = false;
             dash_cd = 0;
         }
+
+        move();
     }
 
     private void move()
     {
         float delta = Gdx.graphics.getDeltaTime();
 
-        velocity.y -= 40f * delta;
+        if(!is_Grounded){
+            velocity.y -= 40f * delta;
+        }
+        else{
+            velocity.y -= 0;
+        }
+
+
 
         float targetSpeed = direction * SPEED;
         float acceleration = is_jumping || is_dashing ? 4f : 12f;
         float differenz = targetSpeed - velocity.x;
         velocity.x += acceleration * differenz * delta;
 
-        position.add(velocity.x * delta, velocity.y * delta);
+//        position.add(velocity.x * delta, velocity.y * delta);
     }
 
     private void Inputhandler() {
@@ -149,9 +154,10 @@ public class Player {
             Movestate = movestate.IDLE;
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && !is_jumping) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && is_Grounded) {
             velocity.y = JUMP_POWER;
             is_jumping = true;
+            is_Grounded = false;
             Movestate = movestate.JUMPING;
         }
     }
@@ -187,32 +193,7 @@ public class Player {
         }
     }
 
-    public Rectangle getBounds() {
-        return player_rect;
-    }
 
-    public Sprite getPlayer_sprite() {
-        return player_sprite;
-    }
-
-    public void setPosition(float x, float y) {
-        this.spawnPosition.set(x, y);
-        this.position.set(x, y);
-        this.velocity.set(0, 0);
-
-    }
-
-    public float getPositionX() {
-        return position.x;
-    }
-
-    public float getPositionY() {
-        return position.y;
-    }
-
-    public Vector2 getPosition() {
-        return position;
-    }
 
     public void damage(int amount)
     {
@@ -254,6 +235,73 @@ public class Player {
         }
     }
 
+
+
+    public Rectangle getPlayer_rect() {
+        return player_rect;
+    }
+
+    public Sprite getPlayer_sprite() {
+        return player_sprite;
+    }
+
+    public void setSpawnPosition(float x, float y) {
+        this.spawnPosition.set(x, y);
+        this.position.set(x, y);
+        this.velocity.set(0, 0);
+
+    }
+
+    public void setPosition (float x, float y)
+    {
+        this.position.set(x, y);
+    }
+
+    public float getPositionX() {
+        return position.x;
+    }
+
+    public float getPositionY() {
+        return position.y;
+    }
+
+    public float getVelocityX() {
+        return velocity.x;
+    }
+    public float getVelocityY() {
+        return velocity.y;
+    }
+
+    public Vector2 setVelocity(float x, float y) {
+        return velocity.set(x,y);
+    }
+
+    public void setVelocityX(float x)
+    {
+        this.velocity.x = x;
+    }
+
+    public void setVelocityY(float y)
+    {
+        this.velocity.y = y;
+    }
+
+    public void setIs_jumping(boolean is_jumping) {
+        this.is_jumping = is_jumping;
+        if(!is_jumping)
+        {
+            is_Grounded = true;
+        }
+    }
+
+    public void setIs_Grounded(boolean is_Grounded) {
+        this.is_Grounded = is_Grounded;
+    }
+
+    public Vector2 getPosition() {
+        return position;
+    }
+
     public boolean isDead()
     {
         return health <= 0;
@@ -276,6 +324,7 @@ public class Player {
     public String getDeathMessage() {
         return deathMessage;
     }
+
 }
 
 

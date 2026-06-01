@@ -19,16 +19,16 @@ public class Assets {
         new AssetDescriptor<Texture>("player/Peter.png", Texture.class);
 
     public static final AssetDescriptor<Texture> fullHeart =
-        new AssetDescriptor<Texture>("player/full_heart.png", Texture.class);
-        
+        new AssetDescriptor<Texture>("player/Heart.png", Texture.class);
+
     public static final AssetDescriptor<Texture> emptyHeart =
-        new AssetDescriptor<Texture>("player/empty_heart.png", Texture.class);
-     
+        new AssetDescriptor<Texture>("player/Heart_empty.png", Texture.class);
+
     public static final AssetDescriptor<Texture> enemyTexture =
-        new AssetDescriptor<Texture>("enemy/Enemy.png", Texture.class);   
-        
+        new AssetDescriptor<Texture>("enemy/Enemy.png", Texture.class);
+
     public static final AssetDescriptor<Texture> enemyDeathTexture =
-        new AssetDescriptor<Texture>("enemy/Enemydead.png", Texture.class);    
+        new AssetDescriptor<Texture>("enemy/Enemydead.png", Texture.class);
 
     public static final AssetDescriptor<TiledMap> map =
         new AssetDescriptor<TiledMap>("world/output/Simple_Map.tmx", TiledMap.class );

@@ -48,12 +48,12 @@ public class Enemy {
     private float attackTimer = 0f;
     private boolean isJumping = false;
 
-    public Enemy(int x, int y, int maxHealth, int speed, int jumpPower, Texture texture, Texture deathTexture) 
+    public Enemy(int x, int y, int maxHealth, int speed, int jumpPower, Texture texture, Texture deathTexture)
     {
         this(x, y, maxHealth, speed, jumpPower, 10, 1f, 0.8f, 0.5f, texture, deathTexture);
     }
 
-    public Enemy(int x, int y, int maxHealth, int speed, int jumpPower, int attackDamage, float detectionRange, float attackRange, float attackCooldown, Texture texture, Texture deathTexture) 
+    public Enemy(int x, int y, int maxHealth, int speed, int jumpPower, int attackDamage, float detectionRange, float attackRange, float attackCooldown, Texture texture, Texture deathTexture)
     {
         this.position = new Vector2(x, y);
         this.patrolCenterX = x;
@@ -71,7 +71,7 @@ public class Enemy {
         this.DETECTION_RANGE = detectionRange;
         this.ATTACK_RANGE = attackRange;
         this.ATTACK_COOLDOWN = attackCooldown;
-        
+
 
         this.normalSprite = new Sprite(texture);
         this.normalSprite.setOriginCenter();
@@ -92,21 +92,21 @@ public class Enemy {
         );
     }
 
-    public void setCollisionLayer(TiledMapTileLayer collisionLayer) 
-    {
-        this.collisionLayer = collisionLayer;
-    }
+//    public void setCollisionLayer(TiledMapTileLayer collisionLayer)
+//    {
+//        this.collisionLayer = collisionLayer;
+//    }
 
-    public void update(Player player, float delta) 
+    public void update(Player player, float delta)
     {
-        if (player == null) 
+        if (player == null)
             {
             return;
         }
 
         attackTimer += delta;
 
-        if (isDead()) 
+        if (isDead())
             {
             enemySprite.set(deathSprite);
             enemySprite.setPosition(position.x, position.y);
@@ -123,11 +123,11 @@ public class Enemy {
         float distanceToPlayer = position.dst(player.getPosition());
         boolean canSeePlayer = canSeePlayer(player.getPosition());
 
-        if (distanceToPlayer <= ATTACK_RANGE && canSeePlayer) 
+        if (distanceToPlayer <= ATTACK_RANGE && canSeePlayer)
             {
             aiState = AIState.ATTACK;
             handleAttack(player);
-        } else if (distanceToPlayer <= DETECTION_RANGE && canSeePlayer) 
+        } else if (distanceToPlayer <= DETECTION_RANGE && canSeePlayer)
             {
             aiState = AIState.CHASE;
             chasePlayer(player);
@@ -140,12 +140,12 @@ public class Enemy {
         updateBounds();
     }
 
-    private void patrol() 
+    private void patrol()
     {
-        if (position.x >= patrolCenterX + patrolDistance) 
+        if (position.x >= patrolCenterX + patrolDistance)
             {
             direction = -1f;
-        } else if (position.x <= patrolCenterX - patrolDistance) 
+        } else if (position.x <= patrolCenterX - patrolDistance)
             {
             direction = 1f;
         }
@@ -153,25 +153,25 @@ public class Enemy {
         movementState = direction == 0f ? MovementState.IDLE : MovementState.RUNNING;
     }
 
-    private void chasePlayer(Player player) 
+    private void chasePlayer(Player player)
     {
         direction = player.getPositionX() > position.x ? 1f : -1f;
         movementState = MovementState.RUNNING;
     }
 
-    private void handleAttack(Player player) 
+    private void handleAttack(Player player)
     {
         direction = player.getPositionX() > position.x ? 1f : -1f;
         movementState = MovementState.RUNNING;
 
-        if (attackTimer >= ATTACK_COOLDOWN) 
+        if (attackTimer >= ATTACK_COOLDOWN)
             {
             attackTimer = 0f;
             player.damage(ATTACK_DAMAGE);
         }
     }
 
-    private void applyMovement(float delta) 
+    private void applyMovement(float delta)
     {
         velocity.y -= 40f * delta;
 
@@ -199,7 +199,7 @@ public class Enemy {
         }
     }
 
-    private boolean canSeePlayer(Vector2 playerPosition) 
+    private boolean canSeePlayer(Vector2 playerPosition)
     {
         if (collisionLayer == null)
              {
@@ -209,7 +209,7 @@ public class Enemy {
         Vector2 lineOfSight = playerPosition.cpy().sub(position);
         float distance = lineOfSight.len();
 
-        if (distance == 0f) 
+        if (distance == 0f)
             {
             return true;
         }
@@ -219,7 +219,7 @@ public class Enemy {
         Vector2 probe = new Vector2(position.x, position.y);
         float stepSize = 0.25f;
 
-        for (float travelled = 0f; travelled < distance; travelled += stepSize) 
+        for (float travelled = 0f; travelled < distance; travelled += stepSize)
             {
             probe.add(lineOfSight.x * stepSize, lineOfSight.y * stepSize);
 
@@ -240,29 +240,29 @@ public class Enemy {
         return true;
     }
 
-    private void updateBounds() 
+    private void updateBounds()
     {
         enemySprite.setPosition(position.x, position.y);
         bounds.set(enemySprite.getX(), enemySprite.getY(), enemySprite.getWidth(), enemySprite.getHeight());
     }
 
-    public void damage(int amount) 
+    public void damage(int amount)
     {
         health -= amount;
-        if (health < 0) 
+        if (health < 0)
             {
             health = 0;
         }
     }
 
-    public void heal(int amount) 
+    public void heal(int amount)
     {
         health += amount;
-        if (health > MAX_HEALTH) 
+        if (health > MAX_HEALTH)
             {
             health = MAX_HEALTH;
         }
-        if (health > 0) 
+        if (health > 0)
             {
             enemySprite.set(normalSprite);
             enemySprite.setPosition(position.x, position.y);
@@ -273,17 +273,17 @@ public class Enemy {
         }
     }
 
-    public boolean isDead() 
+    public boolean isDead()
     {
         return health <= 0;
     }
 
-    public int getHealth() 
+    public int getHealth()
     {
         return health;
     }
 
-    public int getMaxHealth() 
+    public int getMaxHealth()
     {
         return MAX_HEALTH;
     }
@@ -293,12 +293,12 @@ public class Enemy {
         return enemySprite;
     }
 
-    public Rectangle getBounds() 
+    public Rectangle getBounds()
     {
         return bounds;
     }
 
-    public Vector2 getPosition() 
+    public Vector2 getPosition()
     {
         return position;
     }
