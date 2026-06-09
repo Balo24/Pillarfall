@@ -1,5 +1,6 @@
 package Pillarfall.pillarfall;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -41,12 +42,13 @@ public class Enemy {
 
     private final float patrolCenterX;
     private final float patrolDistance;
-    private final float groundY;
+
 
     private TiledMapTileLayer collisionLayer;
     private float direction = 1f;
     private float attackTimer = 0f;
     private boolean isJumping = false;
+    private boolean is_Grounded = true;
 
     public Enemy(int x, int y, int maxHealth, int speed, int jumpPower, Texture texture, Texture deathTexture)
     {
@@ -58,7 +60,7 @@ public class Enemy {
         this.position = new Vector2(x, y);
         this.patrolCenterX = x;
         this.patrolDistance = 4f;
-        this.groundY = y;
+
 
         this.normalTexture = texture;
         this.deathTexture = deathTexture;
@@ -92,10 +94,6 @@ public class Enemy {
         );
     }
 
-//    public void setCollisionLayer(TiledMapTileLayer collisionLayer)
-//    {
-//        this.collisionLayer = collisionLayer;
-//    }
 
     public void update(Player player, float delta)
     {
@@ -165,7 +163,7 @@ public class Enemy {
         movementState = MovementState.RUNNING;
 
         if (attackTimer >= ATTACK_COOLDOWN)
-            {
+        {
             attackTimer = 0f;
             player.damage(ATTACK_DAMAGE);
         }
@@ -173,23 +171,19 @@ public class Enemy {
 
     private void applyMovement(float delta)
     {
-        velocity.y -= 40f * delta;
+
+        if(!is_Grounded){
+            velocity.y -= 40f * delta;
+        }
+        else{
+            velocity.y -= 0;
+        }
 
         float targetSpeed = direction * SPEED;
         float acceleration = isJumping ? 4f : 12f;
-        float difference = targetSpeed - velocity.x;
-        velocity.x += acceleration * difference * delta;
+        float differenz = targetSpeed - velocity.x;
+        velocity.x += acceleration * differenz * delta;
 
-        position.add(velocity.x * delta, velocity.y * delta);
-
-        if (position.y <= groundY)
-             {
-            position.y = groundY;
-            velocity.y = 0f;
-            isJumping = false;
-        }
-
-        enemySprite.setPosition(position.x, position.y);
 
         if (Math.abs(velocity.x) > 0.01f)
              {
@@ -302,6 +296,42 @@ public class Enemy {
     {
         return position;
     }
+
+    public float getPositionX()
+    {
+        return position.x;
+    }
+    public float getPositionY()
+    {
+        return position.y;
+    }
+    public void setPosition (float x, float y)
+    {
+        this.position.set(x, y);
+    }
+
+    public float getVelocityY()
+    {
+        return velocity.y;
+    }
+    public float getVelocityX()
+    {
+        return velocity.x;
+    }
+    public void setVelocityX(float x)
+    {
+        this.velocity.x = x;
+    }
+
+    public void setVelocityY(float y)
+    {
+        this.velocity.y = y;
+    }
+    public boolean setIs_Grounded(boolean is_grounded)
+    {
+        return this.is_Grounded = is_grounded;
+    }
+
 }
 
 

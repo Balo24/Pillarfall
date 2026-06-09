@@ -113,9 +113,9 @@ public class GameScreen implements Screen {
         game.getBatch().begin();
         renderHealthBar(game.getBatch());
 
-        if (player.shouldShowDeathMessage()) {
+        if (world.shouldShowDeathMessage()) {
             deathFont.setColor(Color.RED);
-            deathFont.draw(game.getBatch(), player.getDeathMessage(), 20, Gdx.graphics.getHeight() - 20);
+            deathFont.draw(game.getBatch(), world.getDeathMessage(), 20, Gdx.graphics.getHeight() - 20);
         }
 
         game.getBatch().end();

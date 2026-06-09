@@ -149,7 +149,7 @@
   <object id="368" gid="41" x="1792" y="544" width="32" height="32"/>
   <object id="369" gid="41" x="1824" y="544" width="32" height="32"/>
  </objectgroup>
- <objectgroup id="14" name="CollisionLayer" visible="0">
+ <objectgroup id="14" name="CollisionLayer">
   <object id="164" gid="35" x="160" y="576" width="32" height="32"/>
   <object id="165" gid="35" x="0" y="576" width="32" height="32"/>
   <object id="166" gid="35" x="32" y="576" width="32" height="32"/>
@@ -240,11 +240,9 @@
   <object id="279" gid="35" x="2976" y="352" width="32" height="32"/>
   <object id="280" gid="35" x="2976" y="384" width="32" height="32"/>
   <object id="281" gid="35" x="2976" y="416" width="32" height="32"/>
-  <object id="282" gid="35" x="3072" y="352" width="32" height="32"/>
   <object id="283" gid="35" x="3072" y="384" width="32" height="32"/>
   <object id="284" gid="35" x="3072" y="416" width="32" height="32"/>
   <object id="285" gid="35" x="3072" y="448" width="32" height="32"/>
-  <object id="294" gid="35" x="3168" y="384" width="32" height="32"/>
   <object id="295" gid="35" x="3168" y="416" width="32" height="32"/>
   <object id="296" gid="35" x="3168" y="448" width="32" height="32"/>
   <object id="297" gid="35" x="3168" y="480" width="32" height="32"/>
@@ -296,10 +294,6 @@
   <object id="373" gid="36" x="1760" y="544" width="32" height="32"/>
   <object id="374" gid="36" x="1792" y="544" width="32" height="32"/>
   <object id="375" gid="36" x="1824" y="544" width="32" height="32"/>
-  <object id="376" gid="35" x="1440" y="384" width="32" height="32"/>
-  <object id="377" gid="35" x="1216" y="320" width="32" height="32"/>
-  <object id="378" gid="35" x="1184" y="320" width="32" height="32"/>
-  <object id="379" gid="35" x="1152" y="320" width="32" height="32"/>
   <object id="380" gid="35" x="864" y="288" width="32" height="32"/>
   <object id="381" gid="35" x="832" y="288" width="32" height="32"/>
   <object id="382" gid="35" x="800" y="288" width="32" height="32"/>
@@ -347,7 +341,6 @@
   <object id="424" gid="35" x="1344" y="416" width="32" height="32"/>
   <object id="425" gid="35" x="1376" y="416" width="32" height="32"/>
   <object id="426" gid="35" x="1408" y="416" width="32" height="32"/>
-  <object id="427" gid="35" x="1440" y="416" width="32" height="32"/>
   <object id="428" gid="35" x="1568" y="448" width="32" height="32"/>
   <object id="429" gid="35" x="1760" y="384" width="32" height="32"/>
   <object id="430" gid="35" x="1792" y="384" width="32" height="32"/>

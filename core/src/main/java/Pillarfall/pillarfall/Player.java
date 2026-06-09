@@ -11,6 +11,8 @@ import java.util.List;
 
 public class Player {
 
+
+
     private enum movestate{
         RUNNING, IDLE, JUMPING, DASHING
     }
@@ -30,11 +32,19 @@ public class Player {
 
     private boolean is_jumping = false;
     private boolean is_Grounded = false;
+    private boolean is_dashing = false;
+    private boolean onLeftWall = false;
+    private boolean onRightWall = false;
+    private boolean isSliding = false;
+
     private float direction = 1;
     private float dash_dir;
-    private float dash_cd;
+
+    private float dashTimer;
     private float attackTimer = 0f;
-    private boolean is_dashing = false;
+    private float wallJumpLockTimer = 0f;
+
+
 
     private Vector2 velocity;
     private final Vector2 position = new Vector2(0,0);
@@ -43,9 +53,6 @@ public class Player {
     private final Sprite player_sprite;
     private final Rectangle player_rect;
 
-    private final String deathMessage = "Du wurdest getötet! Starte neu.";
-    private final float DEATH_MESSAGE_DURATION = 5.0f;
-    private float deathMessageTimer = 0f;
 
     public Player(int maxHealth, int speed, int jump_power, int dashPower, Texture player_tex) {
         this.MAX_HEALTH = maxHealth;
@@ -73,28 +80,19 @@ public class Player {
 
         attackTimer += delta;
 
-        if (deathMessageTimer > 0f) {
-            deathMessageTimer -= delta;
-            if (deathMessageTimer < 0f) {
-                deathMessageTimer = 0f;
-            }
-        }
-
         Inputhandler();
-
-
 
 
         if(is_dashing)
         {
-            dash_cd += delta;
-
+            dashTimer += delta;
         }
 
-        if(dash_cd >= 2f)
+
+        if(dashTimer >= 2f)
         {
             is_dashing = false;
-            dash_cd = 0;
+            dashTimer = 0;
         }
 
         move();
@@ -104,61 +102,111 @@ public class Player {
     {
         float delta = Gdx.graphics.getDeltaTime();
 
-        if(!is_Grounded){
-            velocity.y -= 40f * delta;
+        if (wallJumpLockTimer > 0) {
+            wallJumpLockTimer -= delta;
+            if(velocity.x > 0 && direction > 0 || velocity.x < 0 && direction < 0)
+            {
+                wallJumpLockTimer = 0f;
+            }
+            else {
+                return;
+            }
         }
-        else{
-            velocity.y -= 0;
-        }
-
-
 
         float targetSpeed = direction * SPEED;
         float acceleration = is_jumping || is_dashing ? 4f : 12f;
         float differenz = targetSpeed - velocity.x;
         velocity.x += acceleration * differenz * delta;
 
-//        position.add(velocity.x * delta, velocity.y * delta);
+    }
+
+    public void applyGravity()
+    {
+        float delta = Gdx.graphics.getDeltaTime();
+
+        if(!is_Grounded)
+        {
+            velocity.y -= 40f * delta;
+        }
+        else
+        {
+            velocity.y -= 0;
+        }
+        if ((onLeftWall || onRightWall) && velocity.y < 0)
+        {
+            isSliding = true;
+            float slideSpeed = -0.5f;
+            if (velocity.y < slideSpeed) {
+                velocity.y = slideSpeed;
+            }
+        }
+        else
+        {
+            isSliding = false;
+        }
     }
 
     private void Inputhandler() {
 
         direction = 0f;
 
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            direction = 1f;
-            dash_dir = 1f;
-            if(!is_jumping|| !is_dashing)
-            {
-                Movestate = movestate.RUNNING;
-            }
-
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            direction = -1f;
-            dash_dir = -1f;
-            if(!is_jumping || !is_dashing)
-            {
-                Movestate = movestate.RUNNING;
-            }
-
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.E) && !is_dashing)
+        if(wallJumpLockTimer <= 0)
         {
+            if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+                direction = 1f;
+                dash_dir = 1f;
+                if (!is_jumping || !is_dashing) {
+                    Movestate = movestate.RUNNING;
+                }
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+                direction = -1f;
+                dash_dir = -1f;
+                if (!is_jumping || !is_dashing) {
+                    Movestate = movestate.RUNNING;
+                }
+            }
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.E) && !is_dashing) {
             velocity.x = DASH_POWER * dash_dir;
             Movestate = movestate.DASHING;
             is_dashing = true;
         }
-        if (direction == 0 && !is_jumping && !is_dashing ) {
+        if (direction == 0 && !is_jumping && !is_dashing) {
             Movestate = movestate.IDLE;
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && is_Grounded) {
-            velocity.y = JUMP_POWER;
-            is_jumping = true;
-            is_Grounded = false;
-            Movestate = movestate.JUMPING;
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            if(is_Grounded)
+            {
+                velocity.y = JUMP_POWER;
+                is_jumping = true;
+                is_Grounded = false;
+                Movestate = movestate.JUMPING;
+            }
+            else
+            {
+                float pushForceX = 7.0f;
+                if (onLeftWall) {
+                    velocity.y = JUMP_POWER;
+                    velocity.x = pushForceX;
+                    onLeftWall = false;
+                    is_jumping = true;
+                    is_Grounded = false;
+                    wallJumpLockTimer = 0.1f;
+                }
+                else if (onRightWall) {
+                    velocity.y = JUMP_POWER;
+                    velocity.x = -pushForceX;
+                    onRightWall = false;
+                    is_jumping = true;
+                    is_Grounded = false;
+                    wallJumpLockTimer = 0.1f;
+                }
+            }
+
+
         }
     }
 
@@ -201,14 +249,10 @@ public class Player {
         if(health < 0)
         {
             health = 0;
-            onDeath();
         }
     }
 
-    private void onDeath() {
-        deathMessageTimer = DEATH_MESSAGE_DURATION;
-        respawn();
-    }
+
 
     public void respawn() {
         position.set(spawnPosition);
@@ -216,7 +260,7 @@ public class Player {
         health = MAX_HEALTH;
         is_jumping = false;
         is_dashing = false;
-        dash_cd = 0f;
+        dashTimer = 0f;
         attackTimer = 0f;
         direction = 1f;
         dash_dir = 1f;
@@ -286,16 +330,13 @@ public class Player {
         this.velocity.y = y;
     }
 
-    public void setIs_jumping(boolean is_jumping) {
-        this.is_jumping = is_jumping;
-        if(!is_jumping)
-        {
-            is_Grounded = true;
-        }
-    }
 
     public void setIs_Grounded(boolean is_Grounded) {
         this.is_Grounded = is_Grounded;
+    }
+    public boolean Is_Grounded()
+    {
+        return is_Grounded;
     }
 
     public Vector2 getPosition() {
@@ -317,13 +358,36 @@ public class Player {
         return MAX_HEALTH;
     }
 
-    public boolean shouldShowDeathMessage() {
-        return deathMessageTimer > 0f;
+    public boolean isOnLeftWall() {
+        return onLeftWall;
     }
 
-    public String getDeathMessage() {
-        return deathMessage;
+    public void setOnLeftWall(boolean onLeftWall) {
+        this.onLeftWall = onLeftWall;
     }
+
+    public boolean isOnRightWall() {
+        return onRightWall;
+    }
+
+    public void setOnRightWall(boolean onRightWall) {
+        this.onRightWall = onRightWall;
+    }
+
+    public boolean isSliding() {
+        return isSliding;
+    }
+
+    public void setSliding(boolean sliding) {
+        isSliding = sliding;
+    }
+
+    public void setWallJumpLockTimer(float wallJumpLockCd)
+    {
+        this.wallJumpLockTimer = wallJumpLockCd;
+    }
+
+
 
 }
 
