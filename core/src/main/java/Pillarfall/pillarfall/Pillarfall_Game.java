@@ -28,7 +28,7 @@ public class Pillarfall_Game extends Game {
 
     public void startGame() {
         world = new World(new Player(
-            100, 12, 12, 40,
+            100, 9, 12, 40,
             assets.manager.get(Assets.playerTexture)
         ), this ,assets.manager.get(Assets.map));
         // Wechseln des Screens

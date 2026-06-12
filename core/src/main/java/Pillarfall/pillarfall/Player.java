@@ -94,7 +94,7 @@ public class Player {
             is_dashing = false;
             dashTimer = 0;
         }
-
+        applyGravity();
         move();
     }
 
@@ -168,7 +168,7 @@ public class Player {
             }
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.E) && !is_dashing) {
+        if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && !is_dashing) {
             velocity.x = DASH_POWER * dash_dir;
             Movestate = movestate.DASHING;
             is_dashing = true;
@@ -194,7 +194,7 @@ public class Player {
                     onLeftWall = false;
                     is_jumping = true;
                     is_Grounded = false;
-                    wallJumpLockTimer = 0.1f;
+                    wallJumpLockTimer = 0.2f;
                 }
                 else if (onRightWall) {
                     velocity.y = JUMP_POWER;
@@ -202,7 +202,7 @@ public class Player {
                     onRightWall = false;
                     is_jumping = true;
                     is_Grounded = false;
-                    wallJumpLockTimer = 0.1f;
+                    wallJumpLockTimer = 0.2f;
                 }
             }
 
