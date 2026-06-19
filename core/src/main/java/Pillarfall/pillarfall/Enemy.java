@@ -124,14 +124,17 @@ public class Enemy {
             {
             aiState = AIState.ATTACK;
             handleAttack(player);
-        } else if (distanceToPlayer <= DETECTION_RANGE && canSeePlayer)
+        }
+        else if (distanceToPlayer <= DETECTION_RANGE && canSeePlayer)
             {
             aiState = AIState.CHASE;
             chasePlayer(player);
-        } else {
+        }
+        else {
             aiState = AIState.PATROL;
             patrol();
         }
+
 
         applyMovement(delta);
         updateBounds();
@@ -145,6 +148,9 @@ public class Enemy {
         } else if (position.x <= patrolCenterX - patrolDistance)
             {
             direction = 1f;
+        } else if (position.x == patrolCenterX)
+        {
+            jump();
         }
 
         movementState = direction == 0f ? MovementState.IDLE : MovementState.RUNNING;
@@ -194,7 +200,9 @@ public class Enemy {
 
     private void jump()
     {
-
+        velocity.y = JUMP_POWER;
+        isJumping = true;
+        is_Grounded = false;
     }
 
     private boolean canSeePlayer(Vector2 playerPosition)
