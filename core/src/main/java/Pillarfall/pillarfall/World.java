@@ -215,7 +215,7 @@ public class World {
                 if (collisionGrid[leftGridX][y] == TileType.SOLID) {
                     // Falls collision die Position korrigieren --> An der Kante der Wand --> andere Seite
                     player.setVelocityX(0);
-                    float correctX = (leftGridX * TILE_SIZE) + 0.01f;
+                    float correctX = ((leftGridX + 1) * TILE_SIZE) + 0.01f;
                     player.setPosition(correctX, posY);
                     if(!player.Is_Grounded())
                     {
@@ -268,7 +268,7 @@ public class World {
                 {
                     // Collision Checking für Spikes/Hazard Tiles mit einem Threshold
                     float threshold = (nextY + player.getPlayer_rect().getHeight()) / TILE_SIZE - topGridY;
-//                    System.out.println(threshold);
+                    System.out.println(threshold);
                     if (threshold > 0.25f) {
                         DeathMessage();
                         threshold = 0f;
@@ -295,7 +295,7 @@ public class World {
                 {
                     // Collision Checking für Spikes/Hazard Tiles mit einem Threshold
                     float threshold = nextY / TILE_SIZE - bottomGridY;
-//                    System.out.println(threshold);
+                    System.out.println(threshold);
                     if (threshold > 0.25f) {
                         DeathMessage();
                         threshold = 0f;

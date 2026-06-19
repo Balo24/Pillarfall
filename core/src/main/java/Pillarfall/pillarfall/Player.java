@@ -26,7 +26,7 @@ public class Player {
     private final int JUMP_POWER;
     private final int DASH_POWER;
 
-    private final int ATTACK_DAMAGE = 10;
+    private final int ATTACK_DAMAGE = 25;
     private final float ATTACK_RANGE = 1.3f;
     private final float ATTACK_COOLDOWN = 0.5f;
 
@@ -211,7 +211,7 @@ public class Player {
     }
 
     public void attackEnemies(List<Enemy> enemies) {
-        if (!Gdx.input.isKeyJustPressed(Input.Keys.F)) {
+        if (!Gdx.input.isKeyJustPressed(Input.Buttons.LEFT)) {
             return;
         }
 

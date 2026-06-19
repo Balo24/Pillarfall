@@ -166,7 +166,7 @@ public class GameScreen implements Screen {
         Texture emptyHeart = assets.manager.get(Assets.emptyHeart);
 
         for (int i = 0; i < HEART_COUNT; i++) {
-            int threshold = (int) Math.ceil((i + 1) * maxHealth / (double) HEART_COUNT);
+            int threshold = (i + 1) * 50;
             Texture currentHeart = health >= threshold ? fullHeart : emptyHeart;
             batch.draw(currentHeart, startX + i * (HEART_SPACING + HEART_SIZE), startY, HEART_SIZE, HEART_SIZE);
         }
