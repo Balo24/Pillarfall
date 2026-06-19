@@ -114,9 +114,9 @@ public class Player {
         }
 
         float targetSpeed = direction * SPEED;
-        float acceleration = is_jumping || is_dashing ? 4f : 12f;
-        float differenz = targetSpeed - velocity.x;
-        velocity.x += acceleration * differenz * delta;
+        float acceleration = is_jumping || is_dashing ? 8f : 35f;
+        float difference = targetSpeed - velocity.x;
+        velocity.x += acceleration * difference * delta;
 
     }
 
