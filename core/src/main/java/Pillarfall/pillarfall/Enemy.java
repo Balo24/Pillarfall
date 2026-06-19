@@ -1,6 +1,5 @@
 package Pillarfall.pillarfall;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -180,9 +179,9 @@ public class Enemy {
         }
 
         float targetSpeed = direction * SPEED;
-        float acceleration = isJumping ? 4f : 12f;
-        float differenz = targetSpeed - velocity.x;
-        velocity.x += acceleration * differenz * delta;
+        float acceleration = isJumping ? 8f : 35f;
+        float difference = targetSpeed - velocity.x;
+        velocity.x += acceleration * difference * delta;
 
 
         if (Math.abs(velocity.x) > 0.01f)
@@ -191,6 +190,11 @@ public class Enemy {
         } else {
             movementState = MovementState.IDLE;
         }
+    }
+
+    private void jump()
+    {
+
     }
 
     private boolean canSeePlayer(Vector2 playerPosition)
