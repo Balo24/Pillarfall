@@ -32,6 +32,9 @@ public class Enemy {
     private final float ATTACK_RANGE;
     private final float ATTACK_COOLDOWN;
 
+    float invincibleTimer = 0f;
+    float INVINCIBILITY_TIME = 1.0f;
+
     private final Sprite enemySprite;
     private final Sprite normalSprite;
     private final Sprite deathSprite;
@@ -97,11 +100,14 @@ public class Enemy {
     public void update(Player player, float delta)
     {
         if (player == null)
-            {
+        {
             return;
         }
 
         attackTimer += delta;
+
+        if(invincibleTimer > 0) invincibleTimer -= delta;
+
 
         if (isDead())
             {
@@ -254,11 +260,13 @@ public class Enemy {
 
     public void damage(int amount)
     {
+        if(invincibleTimer > 0) return;
+
         health -= amount;
-        if (health < 0)
-            {
-            health = 0;
-        }
+
+        if(health < 0)  health = 0;
+
+        invincibleTimer = INVINCIBILITY_TIME;
     }
 
     public void heal(int amount)
@@ -297,6 +305,14 @@ public class Enemy {
     public Sprite getEnemy_sprite()
      {
         return enemySprite;
+    }
+
+    public Sprite getDeathSprite() {
+        return deathSprite;
+    }
+
+    public Sprite getNormalSprite(){
+        return normalSprite;
     }
 
     public Rectangle getBounds()
@@ -339,9 +355,9 @@ public class Enemy {
     {
         this.velocity.y = y;
     }
-    public boolean setIs_Grounded(boolean is_grounded)
+    public void setIs_Grounded(boolean is_grounded)
     {
-        return this.is_Grounded = is_grounded;
+        this.is_Grounded = is_grounded;
     }
 
 }

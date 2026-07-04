@@ -99,6 +99,7 @@ public class GameScreen implements Screen {
 
         background.render(game.getBatch(), camera);
         player.getPlayer_sprite().draw(game.getBatch());
+        
 
         for (Enemy enemy : world.getEnemies()) {
             enemy.getEnemy_sprite().draw(game.getBatch());

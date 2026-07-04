@@ -7,9 +7,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-import javax.lang.model.element.ModuleElement;
-import java.util.List;
-
 public class Player {
 
 
@@ -28,10 +25,12 @@ public class Player {
     private final int DASH_POWER;
 
     private final int ATTACK_DAMAGE = 25;
-    private final float ATTACK_RANGE = 1.3f;
-    private final float ATTACK_COOLDOWN = 0.5f;
+    private final float ATTACK_COOLDOWN = 1f;
     private boolean is_Attacking = false;
-    public final Rectangle attackHitbox;
+
+    private final Rectangle attackHitbox;
+
+    float INVINCIBILITY_TIME = 1.0f;
 
     private boolean is_jumping = false;
     private boolean is_Grounded = false;
@@ -40,16 +39,19 @@ public class Player {
     private boolean onRightWall = false;
     private boolean isSliding = false;
 
-    private float direction = 1;
-    private float dash_dir;
+    private float facing_direction = 1;
+    private float Move_direction = 1;
+    private float dash_dir = 1;
 
     private float dashTimer;
     private float attackTimer = 0f;
+    private float attackTimer_cd = 0f;
     private float wallJumpLockTimer = 0f;
+    float invincibleTimer = 0f;
 
 
 
-    private Vector2 velocity;
+    private final Vector2 velocity;
     private final Vector2 position = new Vector2(0,0);
     private final Vector2 spawnPosition = new Vector2(0,0);
 
@@ -85,28 +87,27 @@ public class Player {
         if(is_Attacking)
         {
             attackTimer -= delta;
+            update_attackHitbox();
         }
         if(attackTimer <= 0f)
         {
             is_Attacking = false;
             attackTimer = 0f;
-
         }
 
-        Inputhandler();
+        if(attackTimer_cd > 0) attackTimer_cd -= delta;
 
+        if(invincibleTimer > 0) invincibleTimer -= delta;
 
-        if(is_dashing)
-        {
-            dashTimer += delta;
-        }
-
+        if(is_dashing) dashTimer += delta;
 
         if(dashTimer >= 2f)
         {
             is_dashing = false;
             dashTimer = 0;
         }
+
+        Inputhandler();
         applyGravity();
         move();
     }
@@ -117,16 +118,12 @@ public class Player {
 
         if (wallJumpLockTimer > 0) {
             wallJumpLockTimer -= delta;
-            if(velocity.x > 0 && direction > 0 || velocity.x < 0 && direction < 0)
-            {
-                wallJumpLockTimer = 0f;
-            }
-            else {
-                return;
-            }
+            Move_direction = 0f;
+            velocity.x *= 0.9f;
+            return;
         }
 
-        float targetSpeed = direction * SPEED;
+        float targetSpeed = Move_direction * SPEED;
         float acceleration = is_jumping || is_dashing ? 8f : 35f;
         float difference = targetSpeed - velocity.x;
         velocity.x += acceleration * difference * delta;
@@ -161,20 +158,22 @@ public class Player {
 
     private void Inputhandler() {
 
-        direction = 0f;
+        Move_direction = 0f;
 
         if(wallJumpLockTimer <= 0)
         {
             if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-                direction = 1f;
+                Move_direction = 1f;
                 dash_dir = 1f;
+                facing_direction = 1f;
                 if (!is_jumping || !is_dashing) {
                     Movestate = movestate.RUNNING;
                 }
             }
             if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-                direction = -1f;
+                Move_direction = -1f;
                 dash_dir = -1f;
+                facing_direction = -1f;
                 if (!is_jumping || !is_dashing) {
                     Movestate = movestate.RUNNING;
                 }
@@ -186,7 +185,7 @@ public class Player {
             Movestate = movestate.DASHING;
             is_dashing = true;
         }
-        if (direction == 0 && !is_jumping && !is_dashing) {
+        if (Move_direction == 0 && !is_jumping && !is_dashing) {
             Movestate = movestate.IDLE;
         }
 
@@ -200,14 +199,15 @@ public class Player {
             }
             else
             {
-                float pushForceX = 7.0f;
+                float pushForceX = 10.0f;
                 if (onLeftWall) {
                     velocity.y = JUMP_POWER;
                     velocity.x = pushForceX;
                     onLeftWall = false;
                     is_jumping = true;
                     is_Grounded = false;
-                    wallJumpLockTimer = 0.2f;
+                    wallJumpLockTimer = 0.25f;
+
                 }
                 else if (onRightWall) {
                     velocity.y = JUMP_POWER;
@@ -215,36 +215,48 @@ public class Player {
                     onRightWall = false;
                     is_jumping = true;
                     is_Grounded = false;
-                    wallJumpLockTimer = 0.2f;
+                    wallJumpLockTimer = 0.25f;
                 }
             }
 
 
         }
-        if(Gdx.input.isKeyJustPressed(Input.Buttons.LEFT))
+        if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && attackTimer_cd <= 0)
         {
             is_Attacking = true;
             Movestate = movestate.ATTACK;
             attackTimer = 0.15f;
-            attackEnemy();
+            attackTimer_cd = ATTACK_COOLDOWN;
+            System.out.println("Left_CLick: Click registered");
+
         }
     }
 
-    private void attackEnemy()
+    private void update_attackHitbox()
     {
-
-
+        float ATTACK_WIDTH = 0.8f;
+        float ATTACK_HEIGHT = 1.2f;
+        if(facing_direction == 1)
+        {
+            attackHitbox.set(position.x + ATTACK_WIDTH, position.y, ATTACK_WIDTH, ATTACK_HEIGHT);
+        }
+        else
+        {
+            attackHitbox.set(position.x - ATTACK_WIDTH, position.y, ATTACK_WIDTH, ATTACK_HEIGHT);
+        }
     }
 
 
 
     public void damage(int amount)
     {
+        if(invincibleTimer > 0) return;
+
         health -= amount;
-        if(health < 0)
-        {
-            health = 0;
-        }
+
+        if(health < 0)  health = 0;
+
+        invincibleTimer = INVINCIBILITY_TIME;
     }
 
 
@@ -257,7 +269,7 @@ public class Player {
         is_dashing = false;
         dashTimer = 0f;
         attackTimer = 0f;
-        direction = 1f;
+        Move_direction = 1f;
         dash_dir = 1f;
         Movestate = movestate.IDLE;
 
@@ -351,6 +363,15 @@ public class Player {
     public int getMaxHealth()
     {
         return MAX_HEALTH;
+    }
+
+    public Rectangle getAttackHitbox()
+    {
+        return attackHitbox;
+    }
+
+    public int getATTACK_DAMAGE() {
+        return ATTACK_DAMAGE;
     }
 
     public boolean isOnLeftWall() {

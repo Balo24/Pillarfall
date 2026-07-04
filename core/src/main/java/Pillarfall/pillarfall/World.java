@@ -51,6 +51,7 @@ public class World {
             enemy.update(player, delta);
             handleCollision_EnemyX(enemy);
             handleCollision_EnemyY(enemy);
+            handleAttack(enemy);
         }
 
         player.getPlayer_sprite().setPosition(player.getPositionX(), player.getPositionY());
@@ -71,12 +72,6 @@ public class World {
             }
         }
 
-
-
-
-        if (!player.isDead()) {
-            player.attackEnemies(enemies);
-        }
     }
 
     private void spawnEnemies()
@@ -168,7 +163,7 @@ public class World {
         int bottomGridY = (int) (posY / TILE_SIZE);
         int topGridY    = (int) ((posY + player.getPlayer_rect().getHeight()) / TILE_SIZE);
 
-        // Sicherheits-Check gegen Array-Abstürze
+        // Sicherheit-Check gegen Array-Abstürze
         if (leftGridX < 0 || rightGridX >= collisionGrid.length || bottomGridY < 0 || topGridY >= collisionGrid[0].length) {
             return;
         }
@@ -182,12 +177,11 @@ public class World {
 //                    System.out.println(threshold);
                     if (threshold > 0.25f) {
                         DeathMessage();
-                        threshold = 0f;
                         return;
                     }
                 }
                 if (collisionGrid[rightGridX][y] == TileType.SOLID) {
-                    // Falls collision die Position korrigieren --> An der Kante der Wand
+                    // Falls collision die Position korrigieren → An der Kante der Wand
                     player.setVelocityX(0);
                     float correctX = (rightGridX * TILE_SIZE) - player.getPlayer_rect().getWidth() - 0.01f;
                     player.setPosition(correctX, posY);
@@ -208,12 +202,11 @@ public class World {
 //                    System.out.println(threshold);
                     if (threshold > 0.25f) {
                         DeathMessage();
-                        threshold = 0f;
                         return;
                     }
                 }
                 if (collisionGrid[leftGridX][y] == TileType.SOLID) {
-                    // Falls collision die Position korrigieren --> An der Kante der Wand --> andere Seite
+                    // Falls collision die Position korrigieren → An der Kante der Wand → andere Seite
                     player.setVelocityX(0);
                     float correctX = ((leftGridX + 1) * TILE_SIZE) + 0.01f;
                     player.setPosition(correctX, posY);
@@ -271,7 +264,6 @@ public class World {
 //                    System.out.println(threshold);
                     if (threshold > 0.25f) {
                         DeathMessage();
-                        threshold = 0f;
                         return;
                     }
                 }
@@ -298,7 +290,6 @@ public class World {
 //                    System.out.println(threshold);
                     if (threshold > 0.25f) {
                         DeathMessage();
-                        threshold = 0f;
                         return;
                     }
                 }
@@ -346,7 +337,7 @@ public class World {
         int bottomGridY = (int) (posY / TILE_SIZE);
         int topGridY    = (int) ((posY + enemy.getBounds().getHeight()) / TILE_SIZE);
 
-        // Sicherheits-Check gegen Array-Abstürze
+        // Sicherheit-Check gegen Array-Abstürze
         if (leftGridX < 0 || rightGridX >= collisionGrid.length || bottomGridY < 0 || topGridY >= collisionGrid[0].length) {
             return;
         }
@@ -354,7 +345,7 @@ public class World {
         if (velX > 0) {
             for (int y = bottomGridY; y <= topGridY; y++) {
                 if (collisionGrid[rightGridX][y] == TileType.SOLID) {
-                    // Falls collision die Position korrigieren --> An der Kante der Wand
+                    // Falls collision die Position korrigieren → An der Kante der Wand
                     enemy.setVelocityX(0);
                     float correctX = (rightGridX * TILE_SIZE) - enemy.getBounds().getWidth() - 0.01f;
                     enemy.setPosition(correctX, posY);
@@ -365,7 +356,7 @@ public class World {
         else if (velX < 0) {
             for (int y = bottomGridY; y <= topGridY; y++) {
                 if (collisionGrid[leftGridX][y] == TileType.SOLID) {
-                    // Falls collision die Position korrigieren --> An der Kante der Wand --> andere Seite
+                    // Falls collision die Position korrigieren → An der Kante der Wand → andere Seite
                     enemy.setVelocityX(0);
                     float correctX = ((leftGridX + 1) * TILE_SIZE) + 0.01f;
                     enemy.setPosition(correctX, posY);
@@ -443,6 +434,16 @@ public class World {
         }
     }
 
+    private void handleAttack(Enemy enemy)
+    {
+        if(player.getAttackHitbox().overlaps(enemy.getBounds()))
+        {
+            System.out.println("Attack: HIT");
+            enemy.damage(player.getATTACK_DAMAGE());
+
+        }
+
+    }
     private void DeathMessage()
     {
         deathMessageTimer = DEATH_MESSAGE_DURATION;
