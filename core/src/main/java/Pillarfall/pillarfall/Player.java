@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
+import javax.lang.model.element.ModuleElement;
 import java.util.List;
 
 public class Player {
@@ -14,7 +15,7 @@ public class Player {
 
 
     private enum movestate{
-        RUNNING, IDLE, JUMPING, DASHING
+        RUNNING, IDLE, JUMPING, DASHING, ATTACK
     }
 
     private movestate Movestate = movestate.IDLE;
@@ -29,6 +30,8 @@ public class Player {
     private final int ATTACK_DAMAGE = 25;
     private final float ATTACK_RANGE = 1.3f;
     private final float ATTACK_COOLDOWN = 0.5f;
+    private boolean is_Attacking = false;
+    public final Rectangle attackHitbox;
 
     private boolean is_jumping = false;
     private boolean is_Grounded = false;
@@ -71,6 +74,7 @@ public class Player {
         player_sprite.setSize(0.5f,1f);
 
         this.player_rect = new Rectangle(position.x,position.y,0.5f,1f);
+        this.attackHitbox = new Rectangle(position.x, position.y, 0.8f, 1.2f);
     }
 
     public void update()
@@ -78,7 +82,16 @@ public class Player {
 
         float delta = Gdx.graphics.getDeltaTime();
 
-        attackTimer += delta;
+        if(is_Attacking)
+        {
+            attackTimer -= delta;
+        }
+        if(attackTimer <= 0f)
+        {
+            is_Attacking = false;
+            attackTimer = 0f;
+
+        }
 
         Inputhandler();
 
@@ -208,37 +221,19 @@ public class Player {
 
 
         }
+        if(Gdx.input.isKeyJustPressed(Input.Buttons.LEFT))
+        {
+            is_Attacking = true;
+            Movestate = movestate.ATTACK;
+            attackTimer = 0.15f;
+            attackEnemy();
+        }
     }
 
-    public void attackEnemies(List<Enemy> enemies) {
-        if (!Gdx.input.isKeyJustPressed(Input.Buttons.LEFT)) {
-            return;
-        }
+    private void attackEnemy()
+    {
 
-        if (attackTimer < ATTACK_COOLDOWN) {
-            return;
-        }
 
-        attackTimer = 0f;
-
-        Enemy closestEnemy = null;
-        float closestDistance = Float.MAX_VALUE;
-
-        for (Enemy enemy : enemies) {
-            if (enemy == null || enemy.isDead()) {
-                continue;
-            }
-
-            float distance = enemy.getPosition().dst(position);
-            if (distance <= ATTACK_RANGE && distance < closestDistance) {
-                closestEnemy = enemy;
-                closestDistance = distance;
-            }
-        }
-
-        if (closestEnemy != null) {
-            closestEnemy.damage(ATTACK_DAMAGE);
-        }
     }
 
 
