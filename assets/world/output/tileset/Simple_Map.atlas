@@ -1,0 +1,375 @@
+
+Simple_Map.png
+size: 1024, 1024
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+../tiles/background/BUSH - BACKGROUND
+  rotate: false
+  xy: 1, 735
+  size: 512, 288
+  orig: 512, 288
+  offset: 0, 0
+  index: -1
+../tiles/background/WOODS - First
+  rotate: false
+  xy: 1, 155
+  size: 512, 288
+  orig: 512, 288
+  offset: 0, 0
+  index: -1
+../tiles/background/WOODS - Third
+  rotate: false
+  xy: 1, 445
+  size: 512, 288
+  orig: 512, 288
+  offset: 0, 0
+  index: -1
+../tiles/collision/Colision_Logic-1.png
+  rotate: false
+  xy: 515, 895
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+../tiles/collision/Colision_Logic-2.png
+  rotate: false
+  xy: 515, 929
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+../tiles/collision/Colision_Logic-3.png
+  rotate: false
+  xy: 549, 929
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+../tiles/collision/Colision_Logic-4.png
+  rotate: false
+  xy: 1, 54
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+../tiles/decoration/BUSH FOREGROUND 1-1
+  rotate: false
+  xy: 515, 963
+  size: 91, 31
+  orig: 91, 31
+  offset: 0, 0
+  index: -1
+../tiles/decoration/BUSH FOREGROUND 1-2
+  rotate: false
+  xy: 515, 996
+  size: 115, 27
+  orig: 115, 27
+  offset: 0, 0
+  index: -1
+../tiles/decoration/BUSH FOREGROUND 1-3
+  rotate: false
+  xy: 106, 125
+  size: 71, 28
+  orig: 71, 28
+  offset: 0, 0
+  index: -1
+../tiles/decoration/BUSH FOREGROUND 1-4
+  rotate: false
+  xy: 1, 121
+  size: 103, 32
+  orig: 103, 32
+  offset: 0, 0
+  index: -1
+../tiles/decoration/BUSH FOREGROUND 1-5
+  rotate: false
+  xy: 632, 1009
+  size: 49, 14
+  orig: 49, 14
+  offset: 0, 0
+  index: -1
+../tiles/decoration/BUSH FOREGROUND 1-6
+  rotate: false
+  xy: 1, 88
+  size: 91, 31
+  orig: 91, 31
+  offset: 0, 0
+  index: -1
+../tiles/decoration/BUSH FOREGROUND 1-7
+  rotate: false
+  xy: 179, 139
+  size: 49, 14
+  orig: 49, 14
+  offset: 0, 0
+  index: -1
+../tiles/decoration/GRASS 1-1
+  rotate: false
+  xy: 515, 491
+  size: 30, 18
+  orig: 30, 18
+  offset: 0, 0
+  index: -1
+../tiles/decoration/GRASS 1-2
+  rotate: false
+  xy: 549, 569
+  size: 30, 18
+  orig: 30, 18
+  offset: 0, 0
+  index: -1
+../tiles/decoration/GRASS 2-1
+  rotate: false
+  xy: 515, 533
+  size: 34, 20
+  orig: 34, 20
+  offset: 0, 0
+  index: -1
+../tiles/decoration/GRASS 2-2
+  rotate: false
+  xy: 515, 511
+  size: 34, 20
+  orig: 34, 20
+  offset: 0, 0
+  index: -1
+../tiles/decoration/GRASS 3-1
+  rotate: false
+  xy: 583, 950
+  size: 18, 11
+  orig: 18, 11
+  offset: 0, 0
+  index: -1
+../tiles/decoration/GRASS 3-2
+  rotate: false
+  xy: 608, 983
+  size: 18, 11
+  orig: 18, 11
+  offset: 0, 0
+  index: -1
+../tiles/decoration/MUSHROOM 1-1
+  rotate: false
+  xy: 26, 1
+  size: 23, 17
+  orig: 23, 17
+  offset: 0, 0
+  index: -1
+../tiles/decoration/MUSHROOM 1-2
+  rotate: false
+  xy: 1, 1
+  size: 23, 17
+  orig: 23, 17
+  offset: 0, 0
+  index: -1
+../tiles/decoration/MUSHROOM 2-1
+  rotate: false
+  xy: 94, 110
+  size: 8, 9
+  orig: 8, 9
+  offset: 0, 0
+  index: -1
+../tiles/hazard/Spike-1
+  rotate: false
+  xy: 35, 54
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+../tiles/hazard/Spike-2
+  rotate: false
+  xy: 549, 895
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+../tiles/hazard/Spike-3
+  rotate: false
+  xy: 515, 861
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+../tiles/hazard/Spike-4
+  rotate: false
+  xy: 1, 20
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+Dirt&Grass Tileset
+  rotate: false
+  xy: 35, 20
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 0
+Dirt&Grass Tileset
+  rotate: false
+  xy: 515, 827
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 1
+Dirt&Grass Tileset
+  rotate: false
+  xy: 549, 861
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 2
+Dirt&Grass Tileset
+  rotate: false
+  xy: 515, 793
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 3
+Dirt&Grass Tileset
+  rotate: false
+  xy: 549, 827
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 4
+Dirt&Grass Tileset
+  rotate: false
+  xy: 515, 759
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 5
+Dirt&Grass Tileset
+  rotate: false
+  xy: 549, 793
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 6
+Dirt&Grass Tileset
+  rotate: false
+  xy: 515, 725
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 7
+Dirt&Grass Tileset
+  rotate: false
+  xy: 549, 759
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 8
+Dirt&Grass Tileset
+  rotate: false
+  xy: 515, 691
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 9
+Dirt&Grass Tileset
+  rotate: false
+  xy: 549, 725
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 10
+Dirt&Grass Tileset
+  rotate: false
+  xy: 515, 657
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 11
+Dirt&Grass Tileset
+  rotate: false
+  xy: 549, 691
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 12
+Dirt&Grass Tileset
+  rotate: false
+  xy: 515, 623
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 13
+Dirt&Grass Tileset
+  rotate: false
+  xy: 549, 657
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 14
+Dirt&Grass Tileset
+  rotate: false
+  xy: 515, 589
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 15
+Dirt&Grass Tileset
+  rotate: false
+  xy: 549, 623
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 16
+Dirt&Grass Tileset
+  rotate: false
+  xy: 515, 555
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 17
+Dirt&Grass Tileset
+  rotate: false
+  xy: 549, 589
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 18
+Dirt&Grass Tileset
+  rotate: false
+  xy: 549, 589
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 19
+
+Simple_Map2.png
+size: 1024, 1024
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+../tiles/background/BACKGROUND
+  rotate: false
+  xy: 1, 581
+  size: 512, 288
+  orig: 512, 288
+  offset: 0, 0
+  index: -1
+../tiles/background/VINES - Second
+  rotate: false
+  xy: 1, 1
+  size: 512, 288
+  orig: 512, 288
+  offset: 0, 0
+  index: -1
+../tiles/background/WOODS - Second
+  rotate: false
+  xy: 1, 291
+  size: 512, 288
+  orig: 512, 288
+  offset: 0, 0
+  index: -1
+
+Simple_Map3.png
+size: 1024, 512
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+../tiles/background/WOODS - Fourth
+  rotate: false
+  xy: 1, 1
+  size: 512, 288
+  orig: 512, 288
+  offset: 0, 0
+  index: -1
