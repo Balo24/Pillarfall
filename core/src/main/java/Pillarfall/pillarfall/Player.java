@@ -24,10 +24,11 @@ public class Player {
     private final int SPEED;
     private final int JUMP_POWER;
     private final int DASH_POWER;
-
     private final int ATTACK_DAMAGE = 25;
     private final float ATTACK_COOLDOWN = 1f;
-    private boolean is_Attacking = false;
+    private static final float WALL_JUMP_LOCK = 0.25f;
+
+
 
     private final Rectangle attackHitbox;
 
@@ -39,6 +40,8 @@ public class Player {
     private boolean onLeftWall = false;
     private boolean onRightWall = false;
     private boolean isSliding = false;
+    private boolean wallJumpConsumed = false; // verhindert mehrfach triggern
+    private boolean is_Attacking = false;
 
     private float facing_direction = 1;
     private float Move_direction = 1;
@@ -82,7 +85,6 @@ public class Player {
 
     public void update()
     {
-
         float delta = Gdx.graphics.getDeltaTime();
 
         if(is_Attacking)
@@ -107,10 +109,23 @@ public class Player {
             is_dashing = false;
             dashTimer = 0;
         }
+        if (wallJumpLockTimer > 0f) {
+            wallJumpLockTimer -= delta;
+        }
+
+        if (wallJumpLockTimer < 0f) {
+            wallJumpLockTimer = 0f;
+        }
+        System.out.println(wallJumpLockTimer);
+        // Reset des Walljump-Cooldowns wenn wieder Boden berührt
+        if (is_Grounded) {
+            wallJumpConsumed = false;
+        }
 
         Inputhandler();
         applyGravity();
         move();
+
     }
 
     private void move()
@@ -118,7 +133,6 @@ public class Player {
         float delta = Gdx.graphics.getDeltaTime();
 
         if (wallJumpLockTimer > 0) {
-            wallJumpLockTimer -= delta;
             Move_direction = 0f;
             velocity.x *= 0.9f;
             return;
@@ -126,6 +140,7 @@ public class Player {
 
         float targetSpeed = Move_direction * SPEED;
         float acceleration = is_jumping || is_dashing ? 8f : 35f;
+
         float difference = targetSpeed - velocity.x;
         velocity.x += acceleration * difference * delta;
 
@@ -146,7 +161,7 @@ public class Player {
         if ((onLeftWall || onRightWall) && velocity.y < 0)
         {
             isSliding = true;
-            float slideSpeed = -0.5f;
+            float slideSpeed = -1.5f;
             if (velocity.y < slideSpeed) {
                 velocity.y = slideSpeed;
             }
@@ -193,34 +208,13 @@ public class Player {
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             if(is_Grounded)
             {
-                velocity.y = JUMP_POWER;
-                is_jumping = true;
-                is_Grounded = false;
+                normalJump();
                 Movestate = movestate.JUMPING;
             }
             else
             {
-                float pushForceX = 10.0f;
-                if (onLeftWall) {
-                    velocity.y = JUMP_POWER;
-                    velocity.x = pushForceX;
-                    onLeftWall = false;
-                    is_jumping = true;
-                    is_Grounded = false;
-                    wallJumpLockTimer = 0.25f;
-
-                }
-                else if (onRightWall) {
-                    velocity.y = JUMP_POWER;
-                    velocity.x = -pushForceX;
-                    onRightWall = false;
-                    is_jumping = true;
-                    is_Grounded = false;
-                    wallJumpLockTimer = 0.25f;
-                }
+               wallJump();
             }
-
-
         }
         if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && attackTimer_cd <= 0)
         {
@@ -231,6 +225,31 @@ public class Player {
             System.out.println("Left_CLick: Click registered");
 
         }
+    }
+
+    private void wallJump() {
+
+        if (wallJumpLockTimer > 0) return;
+
+        if (!onLeftWall && !onRightWall) return;
+
+        float pushForceX = 10f;
+
+        if (onLeftWall) {
+            velocity.x = pushForceX;
+            velocity.y = JUMP_POWER;
+        }
+        else {
+            velocity.x = -pushForceX;
+            velocity.y = JUMP_POWER;
+        }
+
+        wallJumpLockTimer = WALL_JUMP_LOCK;
+    }
+    private void normalJump() {
+        velocity.y = JUMP_POWER;
+        is_jumping = true;
+        is_Grounded = false;
     }
 
     private void update_attackHitbox()
@@ -299,6 +318,11 @@ public class Player {
         {
             health = MAX_HEALTH;
         }
+    }
+
+    public void resetWallState() {
+        onLeftWall = false;
+        onRightWall = false;
     }
 
 
@@ -423,8 +447,9 @@ public class Player {
         this.wallJumpLockTimer = wallJumpLockCd;
     }
 
-
-
+    public float getWallJumpLockTimer() {
+        return wallJumpLockTimer;
+    }
 }
 
 

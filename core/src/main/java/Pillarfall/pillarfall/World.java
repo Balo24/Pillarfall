@@ -38,18 +38,20 @@ public class World {
     }
 
     public void update(float delta) {
-        player.update();
+
+        player.resetWallState();
 
         handleCollision_PlayerX();
-
         handleCollision_PlayerY();
 
         for (Enemy enemy : enemies) {
-            enemy.update(player, delta);
             handleCollision_EnemyX(enemy);
             handleCollision_EnemyY(enemy);
+            enemy.update(player, delta);
             handleAttack(enemy);
         }
+
+        player.update();
 
         player.getPlayer_sprite().setPosition(player.getPositionX(), player.getPositionY());
         player.getPlayer_rect().set(
@@ -110,6 +112,34 @@ public class World {
         return groundUnder(enemy.getPositionX(), enemy.getPositionY());
     }
 
+    private void cliffAhead(Enemy enemy)
+    {
+        int checkX;
+
+        if (enemy.getDirection() > 0) {
+            checkX = (int)((enemy.getPositionX() + enemy.getBounds().getWidth()) / TILE_SIZE) + 1;
+        } else {
+            checkX = (int)(enemy.getPositionX() / TILE_SIZE) - 1;
+        }
+
+        int checkY = (int)((enemy.getPositionY() - 0.05f) / TILE_SIZE);
+
+        if (checkX < 0 || checkX >= collisionGrid.length ||
+            checkY < 0 || checkY >= collisionGrid[0].length)
+        {
+            enemy.setIs_cliffAhead(true); // Kartenrand = Klippe
+        }
+
+        if(collisionGrid[checkX][checkY] != TileType.SOLID)
+        {
+            enemy.setIs_cliffAhead(true);
+        }
+        else {
+            enemy.setIs_cliffAhead(false);
+        }
+    }
+
+
     private boolean groundUnder(float posX, float posY) {
         int leftGridX  = (int) posX;
         int rightGridX = (int) (posX + 0.5f);
@@ -133,6 +163,8 @@ public class World {
     private void handleCollision_PlayerX() {
         float delta = Gdx.graphics.getDeltaTime();
 
+
+
         float posY = player.getPositionY();
         float posX = player.getPositionX();
 
@@ -141,13 +173,13 @@ public class World {
         float nextX = posX + velX * delta;
 
 
-
         // Tiles um den Spieler
         int leftGridX   = (int) (nextX / TILE_SIZE);
         int rightGridX  = (int) ((nextX + player.getPlayer_rect().getWidth()) / TILE_SIZE);
 
         int bottomGridY = (int) (posY / TILE_SIZE);
         int topGridY    = (int) ((posY + player.getPlayer_rect().getHeight()) / TILE_SIZE);
+
 
         // Sicherheit-Check gegen Array-Abstürze
         if (leftGridX < 0 || rightGridX >= collisionGrid.length || bottomGridY < 0 || topGridY >= collisionGrid[0].length) {
@@ -171,10 +203,8 @@ public class World {
                     player.setVelocityX(0);
                     float correctX = (rightGridX * TILE_SIZE) - player.getPlayer_rect().getWidth() - 0.01f;
                     player.setPosition(correctX, posY);
-                    if(!player.Is_Grounded())
-                    {
-                        player.setOnRightWall(true);
-                    }
+
+                    player.setOnRightWall(true);
                     return;
                 }
             }
@@ -196,16 +226,12 @@ public class World {
                     player.setVelocityX(0);
                     float correctX = ((leftGridX + 1) * TILE_SIZE) + 0.01f;
                     player.setPosition(correctX, posY);
-                    if(!player.Is_Grounded())
-                    {
-                        player.setOnLeftWall(true);
-                    }
+
+                    player.setOnLeftWall(true);
                     return;
                 }
             }
         }
-        player.setOnLeftWall(false);
-        player.setOnRightWall(false);
 
         // Wenn der Weg frei ist, die Bewegung ausführen
         player.setPosition(nextX, posY);
@@ -219,7 +245,6 @@ public class World {
             player.setIs_Grounded(false);
         } else {
             player.setIs_Grounded(true);
-            player.setWallJumpLockTimer(0f);
         }
         float posY = player.getPositionY();
         float posX = player.getPositionX();
@@ -289,8 +314,6 @@ public class World {
 
                     player.setWallJumpLockTimer(0f);
 
-                    player.setOnLeftWall(false);
-                    player.setOnRightWall(false);
                     player.setSliding(false);
                     break;
                 }
@@ -335,6 +358,7 @@ public class World {
                     enemy.setVelocityX(0);
                     float correctX = (rightGridX * TILE_SIZE) - enemy.getBounds().getWidth() - 0.01f;
                     enemy.setPosition(correctX, posY);
+                    enemy.setIs_wallAhead(true);
                     return;
                 }
             }
@@ -346,6 +370,7 @@ public class World {
                     enemy.setVelocityX(0);
                     float correctX = ((leftGridX + 1) * TILE_SIZE) + 0.01f;
                     enemy.setPosition(correctX, posY);
+                    enemy.setIs_wallAhead(true);
                     return;
                 }
             }
@@ -353,6 +378,7 @@ public class World {
 
         // Wenn der Weg frei ist, die Bewegung ausführen
         enemy.setPosition(nextX, posY);
+        enemy.setIs_wallAhead(false);
 
     }
     private void handleCollision_EnemyY(Enemy enemy)

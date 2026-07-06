@@ -8,6 +8,8 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Enemy {
 
+
+
     private enum MovementState {
         IDLE, RUNNING, JUMPING
     }
@@ -49,8 +51,11 @@ public class Enemy {
     private TiledMapTileLayer collisionLayer;
     private float direction = 1f;
     private float attackTimer = 0f;
-    private boolean isJumping = false;
+    private boolean is_Jumping = false;
     private boolean is_Grounded = true;
+    private boolean is_wallAhead  = false;
+    private boolean is_cliffAhead = false;
+
 
     public Enemy(int x, int y, int maxHealth, int speed, int jumpPower, Texture texture, Texture deathTexture)
     {
@@ -151,10 +156,12 @@ public class Enemy {
         if (position.x >= patrolCenterX + patrolDistance)
             {
             direction = -1f;
-        } else if (position.x <= patrolCenterX - patrolDistance)
+        }
+        else if (position.x <= patrolCenterX - patrolDistance)
             {
             direction = 1f;
-        } else if (position.x == patrolCenterX)
+        }
+        else if (is_wallAhead || is_cliffAhead && !is_Jumping)
         {
             jump();
         }
@@ -166,6 +173,10 @@ public class Enemy {
     {
         direction = player.getPositionX() > position.x ? 1f : -1f;
         movementState = MovementState.RUNNING;
+        if (is_wallAhead || is_cliffAhead && !is_Jumping)
+        {
+            jump();
+        }
     }
 
     private void handleAttack(Player player)
@@ -191,7 +202,7 @@ public class Enemy {
         }
 
         float targetSpeed = direction * SPEED;
-        float acceleration = isJumping ? 8f : 35f;
+        float acceleration = is_Jumping ? 8f : 35f;
         float difference = targetSpeed - velocity.x;
         velocity.x += acceleration * difference * delta;
 
@@ -207,7 +218,7 @@ public class Enemy {
     private void jump()
     {
         velocity.y = JUMP_POWER;
-        isJumping = true;
+        is_Jumping = true;
         is_Grounded = false;
     }
 
@@ -359,7 +370,25 @@ public class Enemy {
     {
         this.is_Grounded = is_grounded;
     }
+    public boolean isIs_wallAhead() {
+        return is_wallAhead;
+    }
 
+    public void setIs_wallAhead(boolean is_wallAhead) {
+        this.is_wallAhead = is_wallAhead;
+    }
+
+    public boolean isIs_cliffAhead() {
+        return is_cliffAhead;
+    }
+
+    public void setIs_cliffAhead(boolean is_cliffAhead) {
+        this.is_cliffAhead = is_cliffAhead;
+    }
+
+    public float getDirection() {
+        return direction;
+    }
 }
 
 
