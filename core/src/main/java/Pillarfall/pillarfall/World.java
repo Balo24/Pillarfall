@@ -450,7 +450,7 @@ public class World {
     {
         if(player.getAttackHitbox().overlaps(enemy.getBounds()))
         {
-            System.out.println("Attack: HIT");
+//            System.out.println("Attack: HIT");
             enemy.damage(player.getATTACK_DAMAGE());
 
         }

@@ -116,7 +116,6 @@ public class Player {
         if (wallJumpLockTimer < 0f) {
             wallJumpLockTimer = 0f;
         }
-        System.out.println(wallJumpLockTimer);
         // Reset des Walljump-Cooldowns wenn wieder Boden berührt
         if (is_Grounded) {
             wallJumpConsumed = false;
@@ -222,7 +221,6 @@ public class Player {
             Movestate = movestate.ATTACK;
             attackTimer = 0.15f;
             attackTimer_cd = ATTACK_COOLDOWN;
-            System.out.println("Left_CLick: Click registered");
 
         }
     }
